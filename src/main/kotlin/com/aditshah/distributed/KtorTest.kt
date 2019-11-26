@@ -4,7 +4,7 @@ import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.content.files
+import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.response.header
 import io.ktor.response.respondText
@@ -25,24 +25,23 @@ suspend fun ApplicationCall.respondWith(content: String, contentType: ContentTyp
 
 fun main() {
     val info = SharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)))
-    val drone = MyDrone1(85, Coordinate(72, 11), info)
+    val drone1 = MyDrone1(1, Coordinate(0, 0), info)
+    val drone2 = MyDrone1(2, Coordinate(0, 0), info)
+    val drone3 = MyDrone1(3, Coordinate(0, 0), info)
     val server = embeddedServer(Netty, port = 8080) {
         routing {
             static("static") {
-                files("static")
+                resources("static")
             }
-            get("/json") {
-                drone.move()
-                call.respondWith(drone.location.toJson(), ContentType.Application.Json)
+            get("/oneDrone") {
+                drone1.move()
+                call.respondWith(drone1.location.toJson(), ContentType.Application.Json)
             }
-            get("/good") {
-                val json = """{
-  "userId": 1,
-  "id": 1,
-  "title": "delectus aut autem",
-  "completed": false
-}"""
-                call.respondWith(json, ContentType.Application.Json)
+            get("/drones") {
+                drone1.move()
+                drone2.move()
+                drone3.move()
+                call.respondWith(info.toJson(), ContentType.Application.Json)
             }
         }
     }
