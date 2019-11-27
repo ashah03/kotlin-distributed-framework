@@ -28,8 +28,10 @@ def junitVersion = '5.5.2'
 def etcdRecipesVersion = '+'
 def ktorVersion = '1.2.6'
 
+
 repositories {
     maven { url "https://kotlin.bintray.com/kotlinx" }
+    maven { url = 'https://jitpack.io' }
     mavenCentral()
     jcenter()
     maven { url 'https://jitpack.io' }
@@ -44,9 +46,14 @@ dependencies {
     implementation "com.github.pambrose:common-utils:${utilsVersion}"
     implementation "io.github.microutils:kotlin-logging:$loggingVersion"
     implementation "org.slf4j:slf4j-simple:${slf4jVersion}"
+    implementation "io.ktor:ktor-serialization:${ktorVersion}"
+    //implementation "io.ktor:ktor-client:$ktorVersion"
+    implementation "com.github.pambrose.common-utils:ktor-client-utils:${utilsVersion}"
+
     compile "io.ktor:ktor-server-netty:$ktorVersion"
     compile 'org.processing:core:3.3.6'
     testImplementation "org.amshove.kluent:kluent:$kluentVersion"
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 
@@ -90,11 +97,11 @@ compileTestKotlin {
 
 
 test {
-  useJUnitPlatform()
+    useJUnitPlatform()
 
-  testLogging {
-    events "passed", "skipped", "failed", "standardOut", "standardError"
-    exceptionFormat "full"
-    showStandardStreams = true
-  }
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        exceptionFormat "full"
+        showStandardStreams = true
+    }
 }
