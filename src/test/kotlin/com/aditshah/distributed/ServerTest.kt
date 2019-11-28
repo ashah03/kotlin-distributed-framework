@@ -1,11 +1,16 @@
 package com.aditshah.distributed
 
-import com.sudothought.common.util.sleep
-import org.junit.Test
+
+import com.github.pambrose.common.util.sleep
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Test
 import kotlin.concurrent.thread
 import kotlin.time.seconds
 
 class ServerTest {
+
     @Test
     fun simpleDroneMovementTest() {
         val info = SharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)))
@@ -20,8 +25,11 @@ class ServerTest {
                 }
             }
         }
-        val client = HttpClient()
-        val content = client.get<String>("localhost:8080/drones")
-        println(content)
+
+        runBlocking {
+            val client = HttpClient()
+            val content = client.get<String>("localhost:8080/drones")
+            println(content)
+        }
     }
 }

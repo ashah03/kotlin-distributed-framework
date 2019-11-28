@@ -1,5 +1,6 @@
 package com.aditshah.distributed
 
+import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.Test
 
 class NodeTest {

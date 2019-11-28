@@ -1,6 +1,6 @@
 package com.aditshah.distributed
 
-import com.sudothought.common.util.sleep
+import com.github.pambrose.common.util.sleep
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.*
