@@ -1,12 +1,16 @@
 package com.aditshah.distributed
 
 import com.github.pambrose.common.util.sleep
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.*
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
+import io.ktor.response.header
+import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.serialization.DefaultJsonConfiguration
@@ -19,6 +23,16 @@ import org.slf4j.event.Level
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 import kotlin.time.seconds
+
+suspend fun ApplicationCall.respondWith(content: String, contentType: ContentType) {
+    response.header("cache-control", "must-revalidate,no-cache,no-store")
+//    response.header("Access-Control-Allow-Credentials", "true")
+//    response.header("Access-Control-Allow-Headers", "accept,origin,authorization,content-type")
+//    response.header("Access-Control-Allow-Methods", "*")
+    response.header("Access-Control-Allow-Origin", "*")
+    response.status(HttpStatusCode.OK)
+    respondText(content, contentType)
+}
 
 class Server(port: Int, info: MapSharedInfo) {
 
@@ -57,6 +71,11 @@ class Server(port: Int, info: MapSharedInfo) {
             static("static") {
                 resources("static")
             }
+
+            get("/oneDrone") {
+                call.respondWith(info.getLocation(1).toJson(), ContentType.Application.Json)
+            }
+
             get("/drones") {
                 call.respondWith(info.toJson(), ContentType.Application.Json)
 //                call.respond(info.locationMap.toMap())
