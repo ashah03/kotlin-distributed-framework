@@ -6,7 +6,7 @@ import kotlin.random.Random
 
 fun main() {
     val area = CoordinateArea(Coordinate(0, 0), Coordinate(100, 100))
-    val info = SharedInfo(area)
+    val info = MapSharedInfo(area)
     val arr: ArrayList<Drone> = ArrayList()
     for (i in 1..200) {
         thread {

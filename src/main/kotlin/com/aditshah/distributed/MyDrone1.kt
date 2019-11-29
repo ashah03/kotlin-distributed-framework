@@ -5,9 +5,9 @@ import kotlin.random.Random
 class MyDrone1(id: Int, location: Coordinate, info: SharedInfo) : Drone(id, location, info) {
     override fun move() {
         var newLoc: Coordinate
-        do {
+//        do {
             newLoc = genRandomLocation(info.coordinateArea)
-        } while (info.locationMap.containsValue(newLoc))
+//        } while (info.locationMap.containsValue(newLoc))
         location = newLoc
     }
 
@@ -15,14 +15,14 @@ class MyDrone1(id: Int, location: Coordinate, info: SharedInfo) : Drone(id, loca
         @JvmStatic
         fun main(args: Array<String>) {
             val area = CoordinateArea(Coordinate(0, 0), Coordinate(100, 100))
-            val info = SharedInfo(coordinateArea = area)
-            val drone = MyDrone1(82, Coordinate(5, 7), info)
+            val info = MapSharedInfo(coordinateArea = area)
+            val c1 = Coordinate(5, 7)
+            val drone = MyDrone1(82, c1, info)
             println(drone.location)
-            println(info.locationMap[drone.id])
+            println(info.getLocation(drone.id))
             drone.move()
             println(drone.location)
-            println(info.locationMap[drone.id])
-
+            println(info.getLocation(drone.id))
         }
 
         fun genRandomLocation(area: CoordinateArea): Coordinate {
