@@ -9,7 +9,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import java.util.concurrent.ConcurrentMap
 import kotlin.collections.set
-import kotlin.collections.toMap
 
 fun main() {
     val area = CoordinateArea(Coordinate(0, 0), Coordinate(100, 100))
@@ -30,6 +29,24 @@ interface SharedInfo {
     fun putWeight(coord: Coordinate, weight: Double)
     fun getWeight(coord: Coordinate): Double
 
+}
+
+class EtcdSharedInfo(override val coordinateArea: CoordinateArea) : SharedInfo {
+    override fun putLocation(id: Int, coord: Coordinate) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getLocation(id: Int): Coordinate {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun putWeight(coord: Coordinate, weight: Double) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getWeight(coord: Coordinate): Double {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
 
 class MapSharedInfo(override val coordinateArea: CoordinateArea) : SharedInfo {
