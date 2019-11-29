@@ -10,6 +10,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.response.header
+import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
@@ -72,12 +73,22 @@ class Server(port: Int, info: MapSharedInfo) {
                 resources("static")
             }
 
-            get("/oneDrone") {
-                call.respondWith(info.getLocation(1).toJson(), ContentType.Application.Json)
+            get("/drone") {
+                val strID = call.parameters["id"]
+                if (strID == null) call.respond(HttpStatusCode.BadRequest, "No ID specified")
+                val id: Int = Integer.parseInt(strID)
+                if (info.getIDs().contains(id)) {
+                    call.respondWith(info.getLocation(id).toJson(), ContentType.Application.Json)
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, "400: Invalid ID")
+                }
+
             }
 
             get("/drones") {
-                call.respondWith(info.toJson(), ContentType.Application.Json)
+                //call.respondWith(info.toJson(), ContentType.Application.Json)
+                val json = LocationMapObj(info.locationMap.toMap()).toJson()
+                call.respondWith(json, ContentType.Application.Json)
 //                call.respond(info.locationMap.toMap())
             }
         }
