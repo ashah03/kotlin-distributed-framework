@@ -1,6 +1,6 @@
 function setup() {
     createCanvas(500, 500);
-    frameRate(10)
+    frameRate(2)
 }
 
 function draw() {
@@ -15,5 +15,4 @@ function draw() {
             circle(obj[drone].X * 5, obj[drone].Y * 5, 40)
         }
     })
-
 }

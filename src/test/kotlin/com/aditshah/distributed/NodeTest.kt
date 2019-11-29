@@ -7,7 +7,7 @@ class NodeTest {
     @Test
     fun myDrone1Test() {
         val area = CoordinateArea(Coordinate(0, 0), Coordinate(100, 100))
-        val info = SharedInfo(coordinateArea = area)
+        val info = MapSharedInfo(coordinateArea = area)
         info.coordinateArea shouldEqual area
         val c1 = Coordinate(5, 7)
         val drone = MyDrone1(82, c1, info)

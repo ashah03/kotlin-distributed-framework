@@ -24,7 +24,7 @@ suspend fun ApplicationCall.respondWith(content: String, contentType: ContentTyp
 }
 
 fun main() {
-    val info = SharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)))
+    val info = MapSharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)))
     val drone1 = MyDrone1(1, Coordinate(0, 0), info)
     val drone2 = MyDrone1(2, Coordinate(0, 0), info)
     val drone3 = MyDrone1(3, Coordinate(0, 0), info)

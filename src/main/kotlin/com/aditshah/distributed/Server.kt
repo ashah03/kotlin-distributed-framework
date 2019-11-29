@@ -11,15 +11,16 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.serialization.DefaultJsonConfiguration
 import io.ktor.serialization.serialization
+import io.ktor.server.engine.ShutDownUrl
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
-import kotlin.time.days
 import kotlin.time.seconds
 
-class Server(port: Int, info: SharedInfo) {
+class Server(port: Int, info: MapSharedInfo) {
 
     val server = embeddedServer(Netty, port = 8080) {
         install(ContentNegotiation) {
@@ -45,6 +46,13 @@ class Server(port: Int, info: SharedInfo) {
             }
         }
 
+        install(ShutDownUrl.ApplicationCallFeature) {
+            // The URL that will be intercepted
+            shutDownUrl = "/shutdown"
+            // A function that will be executed to get the exit code of the process
+            exitCodeSupplier = { 0 } // ApplicationCall.() -> Int
+        }
+
         routing {
             static("static") {
                 resources("static")
@@ -59,10 +67,14 @@ class Server(port: Int, info: SharedInfo) {
     fun run() {
         server.start(wait = false)
     }
+
+    fun stop() {
+        server.stop(0, 0, TimeUnit.SECONDS)
+    }
 }
 
 fun main() {
-    val info = SharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)))
+    val info = MapSharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)))
     val server = Server(8080, info)
     server.run()
     for (i in 1..3) {
@@ -74,5 +86,5 @@ fun main() {
             }
         }
     }
-    sleep(1.days)
+
 }
