@@ -6,10 +6,8 @@ import com.google.common.collect.Maps
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
 import java.util.concurrent.ConcurrentMap
 import kotlin.collections.set
-import kotlin.collections.toMap
 
 fun main() {
     val area = CoordinateArea(Coordinate(0, 0), Coordinate(100, 100))
@@ -20,7 +18,7 @@ fun main() {
     drone1.move()
     drone2.move()
     drone3.move()
-    println(info.toJson())
+    //println(info.toJson())
 }
 
 interface SharedInfo {
@@ -29,13 +27,25 @@ interface SharedInfo {
     fun getLocation(id: Int): Coordinate
     fun putWeight(coord: Coordinate, weight: Double)
     fun getWeight(coord: Coordinate): Double
+    fun getIDs(): Set<Int>
 
+}
+
+//class EtcdSharedInfo(override val coordinateArea: CoordinateArea) : SharedInfo {
+//}
+
+@Serializable
+data class LocationMapObj(val map: Map<Int, Coordinate>) {
+    fun toJson(): String = Json.stringify(serializer(), this)
 }
 
 class MapSharedInfo(override val coordinateArea: CoordinateArea) : SharedInfo {
     val locationMap: ConcurrentMap<Int, Coordinate> = Maps.newConcurrentMap()
     val weightsMap: ConcurrentMap<Coordinate, Double> = Maps.newConcurrentMap()
 
+    override fun getIDs(): MutableSet<Int> {
+        return locationMap.keys
+    }
     override fun putLocation(id: Int, coord: Coordinate) {
         locationMap[id] = coord
     }
@@ -52,13 +62,9 @@ class MapSharedInfo(override val coordinateArea: CoordinateArea) : SharedInfo {
         return weightsMap[coord] ?: throw AssertionError("location is null")
     }
 
-    fun toJson() = Json.stringify(serializer(), locationMap.toMap())
+    //fun toJson() = Json.stringify(serializer(), locationMap.toMap())
 
-//    @UnstableDefault
-//    companion object {
-//        @JvmStatic
-//        fun toObject(json: String) : Map<Int, Coordinate> = Json.parse(json)
-//    }
+
 }
 
 
