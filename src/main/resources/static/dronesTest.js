@@ -7,7 +7,7 @@ function draw() {
     clear()
     httpGet("http://localhost:8080/drones", function (response) {
         //print(response)
-        var obj = JSON.parse(response)
+        var obj = JSON.parse(response)["map"]
         print(obj)
         //var drone
         for (var drone in obj) {
