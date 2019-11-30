@@ -10,7 +10,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.response.header
-import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
@@ -22,7 +21,7 @@ import io.ktor.server.netty.Netty
 import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicReferenceArray
+import kotlin.concurrent.thread
 import kotlin.time.seconds
 
 suspend fun ApplicationCall.respondWith(content: String, contentType: ContentType) {
@@ -73,22 +72,12 @@ class Server(port: Int, info: MapSharedInfo) {
                 resources("static")
             }
 
-            get("/drone") {
-                val strID = call.parameters["id"]
-                if (strID == null) call.respond(HttpStatusCode.BadRequest, "No ID specified")
-                val id: Int = Integer.parseInt(strID)
-                if (info.getIDs().contains(id)) {
-                    call.respondWith(info.getLocation(id).toJson(), ContentType.Application.Json)
-                } else {
-                    call.respond(HttpStatusCode.BadRequest, "400: Invalid ID")
-                }
-
+            get("/oneDrone") {
+                call.respondWith(info.getLocation(1).toJson(), ContentType.Application.Json)
             }
 
             get("/drones") {
-                //call.respondWith(info.toJson(), ContentType.Application.Json)
-                val json = LocationMapObj(info.locationMap.toMap()).toJson()
-                call.respondWith(json, ContentType.Application.Json)
+                call.respondWith(info.toJson(), ContentType.Application.Json)
 //                call.respond(info.locationMap.toMap())
             }
         }
@@ -107,29 +96,14 @@ fun main() {
     val info = MapSharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)))
     val server = Server(8080, info)
     server.run()
-    val droneArray = AtomicReferenceArray<MyDrone1>(3)
-    for (i in 0..2) {
-        val drone = MyDrone1(i, Coordinate(0, 0), info)
-        droneArray[i] = drone
-        drone.start()
+    for (i in 1..3) {
+        thread {
+            val drone = MyDrone1(i, Coordinate(0, 0), info)
+            while (true) {
+                sleep((i * 1).seconds)
+                drone.move()
+            }
+        }
     }
-//    println("hi")
-    sleep(10.seconds)
-    for (i in 0..2) {
-//        println(droneArray[i].location)
-        droneArray[i].stop()
-    }
-//    println("bye")
+
 }
-
-//    for (i in 1..3) {
-//        thread {
-//            val drone = MyDrone1(i, Coordinate(0, 0), info)
-//            while (true) {
-//                sleep((i * 1).seconds)
-//                drone.move()
-//            }
-//        }
-//    }
-
-//}
