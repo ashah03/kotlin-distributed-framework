@@ -27,26 +27,12 @@ interface SharedInfo {
     fun getLocation(id: Int): Coordinate
     fun putWeight(coord: Coordinate, weight: Double)
     fun getWeight(coord: Coordinate): Double
+    fun getIDs(): Set<Int>
 
 }
 
-class EtcdSharedInfo(override val coordinateArea: CoordinateArea) : SharedInfo {
-    override fun putLocation(id: Int, coord: Coordinate) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getLocation(id: Int): Coordinate {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun putWeight(coord: Coordinate, weight: Double) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getWeight(coord: Coordinate): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-}
+//class EtcdSharedInfo(override val coordinateArea: CoordinateArea) : SharedInfo {
+//}
 
 @Serializable
 data class LocationMapObj(val map: Map<Int, Coordinate>) {
@@ -57,7 +43,7 @@ class MapSharedInfo(override val coordinateArea: CoordinateArea) : SharedInfo {
     val locationMap: ConcurrentMap<Int, Coordinate> = Maps.newConcurrentMap()
     val weightsMap: ConcurrentMap<Coordinate, Double> = Maps.newConcurrentMap()
 
-    fun getIDs(): MutableSet<Int> {
+    override fun getIDs(): MutableSet<Int> {
         return locationMap.keys
     }
     override fun putLocation(id: Int, coord: Coordinate) {

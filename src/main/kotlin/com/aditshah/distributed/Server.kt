@@ -22,7 +22,7 @@ import io.ktor.server.netty.Netty
 import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
+import java.util.concurrent.atomic.AtomicReferenceArray
 import kotlin.time.seconds
 
 suspend fun ApplicationCall.respondWith(content: String, contentType: ContentType) {
@@ -107,14 +107,29 @@ fun main() {
     val info = MapSharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)))
     val server = Server(8080, info)
     server.run()
-    for (i in 1..3) {
-        thread {
-            val drone = MyDrone1(i, Coordinate(0, 0), info)
-            while (true) {
-                sleep((i * 1).seconds)
-                drone.move()
-            }
-        }
+    val droneArray = AtomicReferenceArray<MyDrone1>(3)
+    for (i in 0..2) {
+        val drone = MyDrone1(i, Coordinate(0, 0), info)
+        droneArray[i] = drone
+        drone.start()
     }
-
+//    println("hi")
+    sleep(10.seconds)
+    for (i in 0..2) {
+//        println(droneArray[i].location)
+        droneArray[i].stop()
+    }
+//    println("bye")
 }
+
+//    for (i in 1..3) {
+//        thread {
+//            val drone = MyDrone1(i, Coordinate(0, 0), info)
+//            while (true) {
+//                sleep((i * 1).seconds)
+//                drone.move()
+//            }
+//        }
+//    }
+
+//}
