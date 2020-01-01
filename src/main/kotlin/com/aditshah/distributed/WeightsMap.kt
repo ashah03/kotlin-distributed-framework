@@ -29,5 +29,10 @@ class WeightsMap() {
             }
         }
     }
+
+    fun toCSV(filename: String) {
+        //TODO
+    }
+
 }
 

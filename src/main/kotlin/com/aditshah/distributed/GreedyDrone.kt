@@ -1,10 +1,12 @@
 package com.aditshah.distributed
 
 import com.github.pambrose.common.coroutine.delay
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 import kotlin.concurrent.thread
-import kotlin.concurrent.withLock
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
@@ -21,43 +23,55 @@ class GreedyDrone(
     val countdown = CountDownLatch(1)
 
     override fun start() {
-        droneArray.add(this)
         thread {
-            while (countdown.count == 1L) {
-                move()
-                runBlocking {
+            droneMap[this.id] = this
+            val job = GlobalScope.launch {
+                while (countdown.count == 1L) {
+                    move()
                     delay(0.1.seconds)
                 }
-            }
 //            print("Done" + id)
+            }
+            countdown.await()
+            job.cancel()
         }
     }
 
 
     override fun stop() {
-        droneArray.remove(this)
+        droneMap.remove(this.id)
         countdown.countDown()
     }
 
     override fun move() {
         with(info) {
-            locationLock.withLock {
+            //            println(getWeightsMap().map)
+//            locationLock.withLock {
+            println("hello")
+            val currentWeightsMap = ConcurrentHashMap(getWeightsMap().map)
                 for (droneID in getIDs()) {
+                    println("droneID=$droneID")
+                    println("currentLocation=${droneMap[droneID]!!.location}")
                     if (id != droneID) {
-                        actionInRadius2D(coverageRadius, getLocation(droneID), getWeightsMap()) { coord, weightsMap ->
-                            weightsMap.map[coord] = 0.0
+                        actionInRadius2D(coverageRadius, getLocation(droneID), currentWeightsMap) { coord, weightsMap ->
+                            try {
+                                weightsMap[coord] = 0.0
+                            } catch (e: NullPointerException) {
+                                println(weightsMap)
+                                println(coord)
+                            }
                         }
                     }
-                }
+//                }
             }
         }
     }
 
-    private fun actionInRadius2D(
+    private fun <T> actionInRadius2D(
         radius: Double,
         center: Coordinate,
-        weightsMap: WeightsMap,
-        block: (Coordinate, WeightsMap) -> Unit
+        arg: T,
+        block: (Coordinate, T) -> Unit
     ) {
         //Find the search square with sides = radius * 2
         val squareTopLeftX = ceil(center.X - radius)
@@ -70,7 +84,8 @@ class GreedyDrone(
                 for (y in max(topLeft.Y, squareTopLeftY).toInt()..min(bottomRight.Y, squareBottomRightY).toInt()) {
                     val coord = Coordinate(x.toDouble(), y.toDouble(), 0.0)
                     if (coord - center <= radius) {
-                        block(coord, weightsMap)
+                        println("Setting to 0: $coord")
+                        block(coord, arg)
                     }
                 }
             }
@@ -78,7 +93,7 @@ class GreedyDrone(
     }
 
     companion object {
-        val droneArray = mutableListOf<GreedyDrone>()
+        val droneMap = ConcurrentHashMap<Int, GreedyDrone>()
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -86,10 +101,13 @@ class GreedyDrone(
                 CoordinateArea(Coordinate(0.0, 0.0), Coordinate(100.0, 100.0)),
                 WeightsMap("csv/map10.csv")
             )
-            for (i in 1..6) {
+            for (i in 1..4) {
                 val drone = GreedyDrone(i, info.coordinateArea.genRandomLocation(), info, 2.237, 1.0)
                 drone.start()
             }
+            runBlocking { delay(5.5.seconds) }
+            GreedyDrone.stopAll()
+            println("hi")
 //            GreedyDrone.startNum(6,info)
         }
 
@@ -102,10 +120,10 @@ class GreedyDrone(
 //        }
 
         fun stopAll() {
-            for (drone in droneArray) {
+            for ((id: Int, drone: GreedyDrone) in droneMap.entries) {
                 drone.countdown.countDown()
+                droneMap.remove(id)
             }
-            droneArray.removeAll(droneArray)
         }
     }
 }
