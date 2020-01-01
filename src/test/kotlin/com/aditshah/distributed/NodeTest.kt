@@ -7,7 +7,7 @@ class NodeTest {
     @Test
     fun myDrone1Test() {
         val area = CoordinateArea(Coordinate(0, 0), Coordinate(100, 100))
-        val info: SharedInfo = MapSharedInfo(coordinateArea = area)
+        val info: SharedInfo = MapSharedInfo(area, WeightsMap("csv/map10.csv"))
         info.coordinateArea shouldEqual area
         val c1 = Coordinate(5, 7)
         val drone = MyDrone1(82, c1, info)
@@ -24,6 +24,6 @@ class NodeTest {
         drone2.location shouldEqual info.getLocation(drone2.id)
         drone2.move()
         drone2.location shouldEqual info.getLocation(drone2.id)
-        info.getIDs().size shouldEqual 1
+        info.getIDs().size shouldEqual 2
     }
 }

@@ -1,6 +1,5 @@
 package com.aditshah.distributed
 
-import com.github.pambrose.common.util.sleep
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
@@ -22,8 +21,6 @@ import io.ktor.server.netty.Netty
 import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicReferenceArray
-import kotlin.time.seconds
 
 suspend fun ApplicationCall.respondWith(content: String, contentType: ContentType) {
     response.header("cache-control", "must-revalidate,no-cache,no-store")
@@ -37,7 +34,7 @@ suspend fun ApplicationCall.respondWith(content: String, contentType: ContentTyp
 
 class Server(port: Int, info: MapSharedInfo) {
 
-    val server = embeddedServer(Netty, port = 8080) {
+    val server = embeddedServer(Netty, port = port) {
         install(ContentNegotiation) {
             serialization(
                 contentType = ContentType.Application.Json,
@@ -94,32 +91,28 @@ class Server(port: Int, info: MapSharedInfo) {
         }
     }
 
-    fun run() {
+    fun start() {
         server.start(wait = false)
     }
-
     fun stop() {
         server.stop(0, 0, TimeUnit.SECONDS)
     }
 }
 
 fun main() {
-    val info = MapSharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)))
+    val info = MapSharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)), WeightsMap("csv/map10.csv"))
     val server = Server(8080, info)
-    server.run()
-    val droneArray = AtomicReferenceArray<MyDrone1>(3)
+    server.start()
     for (i in 0..2) {
         val drone = MyDrone1(i, Coordinate(0, 0), info)
-        droneArray[i] = drone
         drone.start()
     }
-//    println("hi")
-    sleep(10.seconds)
-    for (i in 0..2) {
-//        println(droneArray[i].location)
-        droneArray[i].stop()
-    }
-//    println("bye")
+    //    sleep(10.seconds)
+    //    for (drone in MyDrone1.droneArray) {
+    //        drone.stop()
+    //    }
+    //    server.stop()
+    println("bye")
 }
 
 //    for (i in 1..3) {

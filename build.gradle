@@ -49,10 +49,14 @@ dependencies {
     implementation "io.ktor:ktor-serialization:${ktorVersion}"
     implementation "io.ktor:ktor-client:$ktorVersion"
     implementation "com.github.pambrose.common-utils:ktor-client-utils:${utilsVersion}"
+    compile 'org.apache.commons:commons-csv:1.7'
     compile 'com.fasterxml.jackson.core:jackson-core:2.10.1'
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.8.8'
     compile "io.ktor:ktor-server-netty:$ktorVersion"
     compile 'org.processing:core:3.3.6'
+    compile 'org.apache.commons:commons-csv:1.7'
+
+
     testImplementation "org.amshove.kluent:kluent:$kluentVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"

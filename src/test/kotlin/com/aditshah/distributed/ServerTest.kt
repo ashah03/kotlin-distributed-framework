@@ -22,7 +22,7 @@ class ServerTest {
         val locs = Json.parse(LocationMapObj.serializer(), json)
         locs.map.size shouldEqual numDrones
         last shouldNotEqual locs
-        MyDrone1.endAll()
+        MyDrone1.stopAll()
     }
 
         //println(locs)
@@ -42,9 +42,10 @@ class ServerTest {
         @JvmStatic
         @BeforeAll
         fun setUp() {
-            val info = MapSharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)))
+            val info =
+                MapSharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)), WeightsMap("csv/map10.csv"))
             val server = Server(8080, info)
-            server.run()
+            server.start()
 //            val droneArray = AtomicReferenceArray<MyDrone1>(3)
             for (i in 1..numDrones) {
                 val drone = MyDrone1(i, Coordinate(0, 0), info)
@@ -60,6 +61,7 @@ class ServerTest {
                 val client = HttpClient()
                 client.get<String>("http://localhost:8080/shutdown")
             }
+
 //            for (i in 1..numDrones) {
 //                droneArray[i-1].stop()
 //            }
