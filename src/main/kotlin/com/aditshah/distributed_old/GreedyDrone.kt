@@ -1,4 +1,4 @@
-package com.aditshah.distributed
+package com.aditshah.distributed_old
 
 import com.github.pambrose.common.coroutine.delay
 import kotlinx.coroutines.GlobalScope
@@ -49,29 +49,27 @@ class GreedyDrone(
 //            locationLock.withLock {
             println("hello")
             val currentWeightsMap = ConcurrentHashMap(getWeightsMap().map)
-                for (droneID in getIDs()) {
-                    println("droneID=$droneID")
-                    println("currentLocation=${droneMap[droneID]!!.location}")
-                    if (id != droneID) {
-                        actionInRadius2D(coverageRadius, getLocation(droneID), currentWeightsMap) { coord, weightsMap ->
-                            try {
-                                weightsMap[coord] = 0.0
-                            } catch (e: NullPointerException) {
-                                println(weightsMap)
-                                println(coord)
-                            }
+            for (droneID in getIDs()) {
+                println("droneID=$droneID")
+                println("currentLocation=${droneMap[droneID]!!.location}")
+                if (id != droneID) {
+                    actionInRadius2D(coverageRadius, getLocation(droneID)) { coord ->
+                        try {
+                            putWeight(coord, 0.0)
+                        } catch (e: NullPointerException) {
+                            println(coord)
                         }
                     }
+                }
 //                }
             }
         }
     }
 
-    private fun <T> actionInRadius2D(
+    private fun actionInRadius2D(
         radius: Double,
         center: Coordinate,
-        arg: T,
-        block: (Coordinate, T) -> Unit
+        block: (Coordinate) -> Unit
     ) {
         //Find the search square with sides = radius * 2
         val squareTopLeftX = ceil(center.X - radius)
@@ -85,7 +83,7 @@ class GreedyDrone(
                     val coord = Coordinate(x.toDouble(), y.toDouble(), 0.0)
                     if (coord - center <= radius) {
                         println("Setting to 0: $coord")
-                        block(coord, arg)
+                        block(coord)
                     }
                 }
             }
@@ -106,7 +104,7 @@ class GreedyDrone(
                 drone.start()
             }
             runBlocking { delay(5.5.seconds) }
-            GreedyDrone.stopAll()
+            stopAll()
             println("hi")
 //            GreedyDrone.startNum(6,info)
         }

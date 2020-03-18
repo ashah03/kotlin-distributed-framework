@@ -1,4 +1,4 @@
-package com.aditshah.distributed
+package com.aditshah.distributed_old
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -94,6 +94,7 @@ class Server(port: Int, info: MapSharedInfo) {
     fun start() {
         server.start(wait = false)
     }
+
     fun stop() {
         server.stop(0, 0, TimeUnit.SECONDS)
     }

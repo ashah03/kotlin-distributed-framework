@@ -1,15 +1,13 @@
 //etcd --listen-client-urls=http://localhost:2379 --advertise-client-urls=http://localhost:2379
 
-package com.aditshah.distributed
+package com.aditshah.distributed_old
 
 import com.google.common.collect.Maps
-import kotlinx.atomicfu.locks.ReentrantLock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.locks.Lock
-import kotlin.collections.set
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.random.Random
@@ -50,6 +48,7 @@ class MapSharedInfo(
     override fun getIDs(): MutableSet<Int> {
         return locationMap.keys
     }
+
     override fun putLocation(id: Int, coord: Coordinate) {
         locationMap[id] = coord
     }
