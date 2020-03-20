@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.aditshah.distributed";
+option java_outer_classname = "DroneServerProto";
+option objc_class_prefix = "DSP";
+
+package distributed;
+
+// The request message containing the user's name.
+message CoordinateMessage {
+    int32 id = 1;
+    double x = 2;
+    double y = 3;
+    double z = 4;
+}
+
+message Status {
+    string message = 1;
+}
+
+message CoordinateRequest {
+    int32 id = 1;
+}
+
+
+service LocationService {
+    rpc GetLocation (CoordinateRequest) returns (CoordinateMessage);
+    rpc SetLocation (CoordinateMessage) returns (Status);
+}

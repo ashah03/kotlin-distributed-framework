@@ -1,7 +1,6 @@
-package com.aditshah.distributed
+package com.aditshah.distributed_old
 
 
-import com.aditshah.distributed_old.*
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import kotlinx.coroutines.runBlocking
@@ -44,7 +43,12 @@ class ServerTest {
         @BeforeAll
         fun setUp() {
             val info =
-                MapSharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)), WeightsMap("csv/map10.csv"))
+                MapSharedInfo(
+                    CoordinateArea(
+                        Coordinate(0, 0),
+                        Coordinate(100, 100)
+                    ), WeightsMap("csv/map10.csv")
+                )
             val server = Server(8080, info)
             server.start()
 //            val droneArray = AtomicReferenceArray<MyDrone1>(3)

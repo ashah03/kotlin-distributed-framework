@@ -1,14 +1,22 @@
-package com.aditshah.distributed
+package com.aditshah.distributed_old
 
-import com.aditshah.distributed_old.*
 import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.Test
 
 class NodeTest {
     @Test
     fun myDrone1Test() {
-        val area = CoordinateArea(Coordinate(0, 0), Coordinate(100, 100))
-        val info: SharedInfo = MapSharedInfo(area, WeightsMap("csv/map10.csv"))
+        val area = CoordinateArea(
+            Coordinate(
+                0,
+                0
+            ), Coordinate(100, 100)
+        )
+        val info: SharedInfo =
+            MapSharedInfo(
+                area,
+                WeightsMap("csv/map10.csv")
+            )
         info.coordinateArea shouldEqual area
         val c1 = Coordinate(5, 7)
         val drone = MyDrone1(82, c1, info)

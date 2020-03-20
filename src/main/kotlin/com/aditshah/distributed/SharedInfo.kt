@@ -1,6 +1,6 @@
 //etcd --listen-client-urls=http://localhost:2379 --advertise-client-urls=http://localhost:2379
 
-package com.aditshah.distributed_old
+package com.aditshah.distributed
 
 import com.google.common.collect.Maps
 import io.ktor.util.InternalAPI
@@ -74,17 +74,6 @@ class MapSharedInfo(
 
 }
 
-
-//class SharedInfo2(val coordinateArea: CoordinateArea) {
-//    val locationMap: ConcurrentMap<Int, Coordinate> = Maps.newConcurrentMap()
-//    val weightsMap: ConcurrentMap<Coordinate, Double> = Maps.newConcurrentMap()
-//
-//    fun toJson(): String {
-//        val jsonMap = locationMap.toMap()
-//        return stringify(jsonMap)
-//    }
-//}
-
 @Serializable
 data class Coordinate(var X: Double, var Y: Double, var Z: Double = 0.0) {
     constructor(X: Int, Y: Int, Z: Int = 0) : this(X.toDouble(), Y.toDouble(), Z.toDouble())
@@ -109,7 +98,7 @@ data class Coordinate(var X: Double, var Y: Double, var Z: Double = 0.0) {
 data class CoordinateArea(val topLeft: Coordinate, val bottomRight: Coordinate) {
     fun contains(coord: Coordinate): Boolean {
         return (coord.X >= topLeft.X && coord.Y >= topLeft.Y && coord.Z >= topLeft.Z) &&
-                (coord.X <= bottomRight.X && coord.Y <= bottomRight.Y && coord.Z <= bottomRight.Z)
+               (coord.X <= bottomRight.X && coord.Y <= bottomRight.Y && coord.Z <= bottomRight.Z)
     }
 
     fun genRandomLocation(): Coordinate {
