@@ -1,4 +1,4 @@
-package com.aditshah.distributed.client
+package com.aditshah.distributed.node
 
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
@@ -31,20 +31,5 @@ class RandomDiscreteDrone(
             }
         }
         executor.awaitTermination(1000, TimeUnit.SECONDS)
-    }
-
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val node = RandomDiscreteDrone(
-                Coordinate(Random.nextInt(0, 10), Random.nextInt(0, 10), Random.nextInt(0, 10)),
-                CoordinateArea(Coordinate(0, 0, 0), Coordinate(10, 10, 10)),
-                "localhost",
-                50051
-            )
-
-            println("Starting drone")
-            node.start()
-        }
     }
 }

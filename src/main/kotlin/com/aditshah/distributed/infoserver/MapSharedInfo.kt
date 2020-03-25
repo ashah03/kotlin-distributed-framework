@@ -1,4 +1,4 @@
-package com.aditshah.distributed.server
+package com.aditshah.distributed.infoserver
 
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
@@ -48,25 +48,38 @@ class MapSharedInfo(
 }
 
 class NodeList {
-    val set = HashSet<NodeRepresentation>();
+    val set = HashSet<Int>();
 
-    fun getNode(id: Int): NodeRepresentation {
-        return set.first { it.id == id };
+    fun contains(id: Int): Boolean {
+        return set.contains(id)
     }
 
-    fun getNode(host: String, port: Int): NodeRepresentation {
-        return set.first { it.host == host && it.port == port }
-    }
-
-    fun addNode(id: Int, hostname: String, port: Int) {
-        addNode(NodeRepresentation(id, hostname, port))
-    }
-
-    fun addNode(node: NodeRepresentation) {
-        set.add(node);
+    fun addNode(id: Int) {
+        set.add(id);
     }
 
 }
 
-data class NodeRepresentation(val id: Int, val host: String, val port: Int);
+//class NodeList {
+//    val set = HashSet<NodeRepresentation>();
+//
+//    fun getNode(id: Int): NodeRepresentation {
+//        return set.first { it.id == id };
+//    }
+//
+//    fun getNode(host: String, port: Int): NodeRepresentation {
+//        return set.first { it.host == host && it.port == port }
+//    }
+//
+//    fun addNode(id: Int, hostname: String, port: Int) {
+//        addNode(NodeRepresentation(id, hostname, port))
+//    }
+//
+//    fun addNode(node: NodeRepresentation) {
+//        set.add(node);
+//    }
+//
+//}
+//
+//data class NodeRepresentation(val id: Int, val host: String, val port: Int);
 

@@ -1,4 +1,4 @@
-package com.aditshah.distributed.server
+package com.aditshah.distributed.infoserver
 
 import com.aditshah.distributed.*
 import com.aditshah.distributed.common.Coordinate
@@ -19,9 +19,10 @@ class NodeInfoServiceImpl() : NodeInfoServiceGrpc.NodeInfoServiceImplBase() {
 
     private fun generateID() = currentID.getAndIncrement()
 
-    override fun registerNode(request: RegistrationMessage, responseObserver: StreamObserver<NodeID>) {
+    override fun registerNode(request: CoordinateMessage, responseObserver: StreamObserver<NodeID>) {
         val id = generateID();
-        info.nodeList.addNode(id, request.hostname, request.port)
+
+        info.nodeList.addNode(id)
         responseObserver.onNext(
             nodeID {
                 this.value = id
@@ -55,4 +56,6 @@ class NodeInfoServiceImpl() : NodeInfoServiceGrpc.NodeInfoServiceImplBase() {
             onCompleted()
         }
     }
+
+
 }

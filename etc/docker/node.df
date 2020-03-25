@@ -1,0 +1,23 @@
+FROM adoptopenjdk/openjdk11:alpine-jre
+MAINTAINER Adit Shah "aditshah00@gmail.com"
+
+# Define the user to use in this instance to prevent using root that even in a container, can be a security risk.
+ENV APPLICATION_USER adit 
+
+# Then add the user, create the /app folder and give permissions to our user.
+RUN adduser --disabled-password --gecos '' $APPLICATION_USER
+
+RUN mkdir /app
+RUN chown -R $APPLICATION_USER /app
+
+# Mark this container to use the specified $APPLICATION_USER
+USER $APPLICATION_USER
+
+# Make /app the working directory
+WORKDIR /app
+
+COPY ./build/libs/kotlin-node.jar /app/kotlin-node.jar
+
+CMD []
+
+ENTRYPOINT ["java", "-server", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=100", "-XX:+UseStringDeduplication", "-jar", "/app/kotlin-node.jar"]

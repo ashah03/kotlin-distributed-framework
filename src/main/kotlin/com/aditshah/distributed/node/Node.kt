@@ -1,4 +1,4 @@
-package com.aditshah.distributed.client
+package com.aditshah.distributed.node
 
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
@@ -10,7 +10,7 @@ abstract class Node(
     val port: Int
 ) {
 
-    val client = GrpcClient(this)
+    val client = NodeClient(this)
 
     init {
         require(coordinateArea.contains(startingLocation)) { "Location $startingLocation not in area $coordinateArea" }

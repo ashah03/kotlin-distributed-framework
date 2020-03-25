@@ -1,4 +1,4 @@
-package com.aditshah.distributed.server
+package com.aditshah.distributed.infoserver
 
 import com.aditshah.distributed.common.Coordinate
 import com.google.common.collect.Maps

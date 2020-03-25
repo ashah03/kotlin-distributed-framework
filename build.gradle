@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.50'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.50'
     id "com.github.ben-manes.versions" version "0.28.0"
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'com.google.protobuf' version '0.8.12'
     id 'jacoco'
     id 'com.github.kt3k.coveralls' version '2.8.4'
@@ -158,3 +159,22 @@ sourceSets {
     }
 }
 
+task server(type: Jar, dependsOn: shadowJar) {
+    archiveFileName = 'kotlin-server.jar'
+    manifest {
+        attributes('Main-Class': 'com.aditshah.distributed.infoserver.InfoServer')
+    }
+    from zipTree(shadowJar.archiveFile)
+}
+
+task node(type: Jar, dependsOn: shadowJar) {
+    archiveFileName = 'kotlin-node.jar'
+    manifest {
+        attributes('Main-Class': 'com.aditshah.distributed.node.NodeClient')
+    }
+    from zipTree(shadowJar.archiveFile)
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
