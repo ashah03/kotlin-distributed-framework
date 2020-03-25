@@ -30,6 +30,8 @@ def ktorVersion = '1.2.6'
 def grpcVersion = '1.27.1'
 def kgaxVersion = '0.6.0'
 def protocVersion = '3.11.4'
+def annotationVersion = "1.3.2"
+
 
 protobuf {
     protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
@@ -87,6 +89,7 @@ dependencies {
     compile "io.ktor:ktor-server-netty:$ktorVersion"
     compile 'org.processing:core:3.3.6'
     compile 'org.apache.commons:commons-csv:1.7'
+    compileOnly "javax.annotation:javax.annotation-api:${annotationVersion}"
 
 
     testImplementation "org.amshove.kluent:kluent:$kluentVersion"

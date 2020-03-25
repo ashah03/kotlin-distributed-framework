@@ -1,4 +1,4 @@
-package com.aditshah.distributed
+package com.aditshah.distributed.server
 
 import io.grpc.Server
 import io.grpc.ServerBuilder
@@ -12,7 +12,7 @@ class GrpcServer {
     @Throws(IOException::class)
     private fun start() {
         server = ServerBuilder.forPort(port)
-                .addService(LocationServiceImpl())
+                .addService(NodeInfoServiceImpl())
                 .build()
                 .start()
         println("Server started, listening on $port")

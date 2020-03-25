@@ -8,23 +8,34 @@ option objc_class_prefix = "DSP";
 package distributed;
 
 // The request message containing the user's name.
+
+message NodeID {
+    int32 value = 1;
+}
+
+message RegistrationMessage {
+    CoordinateMessage coord = 1;
+    string hostname = 2;
+    int32 port = 3;
+}
+
 message CoordinateMessage {
-    int32 id = 1;
-    double x = 2;
-    double y = 3;
-    double z = 4;
+    double x = 1;
+    double y = 2;
+    double z = 3;
+}
+
+message CoordinateIDMessage {
+    NodeID id = 1;
+    CoordinateMessage coordinate = 2;
 }
 
 message Status {
     string message = 1;
 }
 
-message CoordinateRequest {
-    int32 id = 1;
-}
-
-
-service LocationService {
-    rpc GetLocation (CoordinateRequest) returns (CoordinateMessage);
-    rpc SetLocation (CoordinateMessage) returns (Status);
+service NodeInfoService {
+    rpc RegisterNode (RegistrationMessage) returns (NodeID);
+    rpc PutLocation (CoordinateIDMessage) returns (Status);
+    rpc GetLocation (NodeID) returns (CoordinateMessage);
 }

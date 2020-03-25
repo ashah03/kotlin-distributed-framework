@@ -1,5 +1,6 @@
-package com.aditshah.distributed
+package com.aditshah.distributed.server
 
+import com.aditshah.distributed.common.Coordinate
 import com.google.common.collect.Maps
 import org.apache.commons.csv.CSVFormat
 import java.io.FileReader

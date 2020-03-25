@@ -118,7 +118,7 @@ fun main() {
 
 //    for (i in 1..3) {
 //        thread {
-//            val drone = MyDrone1(i, Coordinate(0, 0), info)
+//            val drone = MyDrone1(i, com.aditshah.distributed.common.Coordinate(0, 0), info)
 //            while (true) {
 //                sleep((i * 1).seconds)
 //                drone.move()

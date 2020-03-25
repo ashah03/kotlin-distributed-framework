@@ -48,7 +48,7 @@ package com.aditshah.distributed_old
 //            for (droneID in 1..numDrones) {
 //                executor.execute {
 //                    val path = pathTemplate.replace("X", droneID.toString())
-//                    val coord = Coordinate(
+//                    val coord = com.aditshah.distributed.common.Coordinate(
 //                        Random.nextInt(1, 100),
 //                        Random.nextInt(1, 100),
 //                        Random.nextInt(1, 100)

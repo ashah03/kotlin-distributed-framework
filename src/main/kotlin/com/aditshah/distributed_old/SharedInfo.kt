@@ -76,8 +76,8 @@ class MapSharedInfo(
 
 
 //class SharedInfo2(val coordinateArea: CoordinateArea) {
-//    val locationMap: ConcurrentMap<Int, Coordinate> = Maps.newConcurrentMap()
-//    val weightsMap: ConcurrentMap<Coordinate, Double> = Maps.newConcurrentMap()
+//    val locationMap: ConcurrentMap<Int, com.aditshah.distributed.common.Coordinate> = Maps.newConcurrentMap()
+//    val weightsMap: ConcurrentMap<com.aditshah.distributed.common.Coordinate, Double> = Maps.newConcurrentMap()
 //
 //    fun toJson(): String {
 //        val jsonMap = locationMap.toMap()
@@ -128,7 +128,7 @@ data class CoordinateArea(val topLeft: Coordinate, val bottomRight: Coordinate) 
         return Coordinate(x, y, z)
     }
 
-//    fun actionInRadiusInt(radius : Double, center : Coordinate, block : ( )->Unit ){
+//    fun actionInRadiusInt(radius : Double, center : com.aditshah.distributed.common.Coordinate, block : ( )->Unit ){
 //        //Find the search square with sides = radius * 2
 //        val squareTopLeftX = ceil(center.X - radius)
 //        val squareTopLeftY = ceil(center.Y - radius)
