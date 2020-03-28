@@ -1,10 +1,11 @@
 package com.aditshah.distributed.node
 
-import com.aditshah.distributed.NodeInfoServiceClient
+import com.aditshah.distributed.CommunicationServiceClient
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
 import com.aditshah.distributed.coordinateIDMessage
 import com.aditshah.distributed.coordinateMessage
+import com.aditshah.distributed.infoserver.WeightsMap
 import com.aditshah.distributed.nodeID
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.runBlocking
@@ -13,13 +14,14 @@ import kotlin.random.Random
 
 class NodeClient(private val node: Node) : Closeable {
 
-    private val client: NodeInfoServiceClient;
+    private val client: CommunicationServiceClient;
+//    private val client: NodeInfoServiceClient;
 
     init {
         node.apply {
             println("Connecting to server $host:$port")
         }
-        client = NodeInfoServiceClient.create(
+        client = CommunicationServiceClient.create(
             channel = ManagedChannelBuilder.forAddress(
                 node.host,
                 node.port
@@ -39,49 +41,80 @@ class NodeClient(private val node: Node) : Closeable {
             val coord = node.location;
             println(coord)
             val id = client.registerNode(
-                coordinateMessage {
-                    this.x = coord.X
-                    this.y = coord.Y
-                    this.z = coord.Z
-                }
+//                coordinateMessage {
+//                    this.x = coord.X
+//                    this.y = coord.Y
+//                    this.z = coord.Z
+//                }
             )
             println("Node registered. id = ${id.value}")
             id.value;
         }
     }
 
+//    fun putLocation() {
+//        val coord = node.location;
+//        println("Putting location $coord for id ${node.id}")
+//        runBlocking {
+//            val status = client.putLocation(
+//                coordinateIDMessage {
+//                    this.id = nodeID { this.value = node.id }
+//                    this.coordinate = coordinateMessage {
+//                        this.x = coord.X
+//                        this.y = coord.Y
+//                        this.z = coord.Z
+//                    }
+//                }
+//            )
+//            println(status)
+//        }
+//    }
+
+
     fun putLocation() {
         val coord = node.location;
-        println("Putting location $coord for id ${node.id}")
+        println("Putting location $coord")
         runBlocking {
-            val status = client.putLocation(
+            client.putLocation()
+                    .requests.send(
                 coordinateIDMessage {
-                    this.id = nodeID { this.value = node.id }
-                    this.coordinate = coordinateMessage {
-                        this.x = coord.X
-                        this.y = coord.Y
+                    this.id = nodeID { node.id };
+                    coordinateMessage {
+                        this.x = coord.X;
+                        this.y = coord.Y;
                         this.z = coord.Z
                     }
                 }
             )
-            println(status)
         }
     }
 
-    fun getLocation(id: Int): Coordinate {
-        println("Getting location...")
-        assert(id != node.id)
-        return runBlocking {
-            val response = client.getLocation(
-                nodeID {
-                    this.value = id
-                }
-            )
-            val coord = Coordinate(response.x, response.y, response.z)
-            println("received $coord for id $id")
-            coord
+    fun subscribeLocation() {
+        val replies = client.subscribeLocations(nodeID { node.id })
+                .responses
+        runBlocking {
+            for (reply in replies) {
+                node.info.putLocation(
+                    reply.id.value, Coordinate(reply.coordinate)
+                )
+            }
         }
     }
+
+//    fun getLocation(id: Int): Coordinate {
+//        println("Getting location...")
+//        assert(id != node.id)
+//        return runBlocking {
+//            val response = client.getLocation(
+//                nodeID {
+//                    this.value = id
+//                }
+//            )
+//            val coord = Coordinate(response.x, response.y, response.z)
+//            println("received $coord for id $id")
+//            coord
+//        }
+//    }
 
 //    override fun putWeight(coord: Coordinate, weight: Double) {
 //        runBlocking {
@@ -109,7 +142,10 @@ class NodeClient(private val node: Node) : Closeable {
         fun main(args: Array<String>) {
             val node = RandomDiscreteDrone(
                 Coordinate(Random.nextInt(0, 10), Random.nextInt(0, 10), Random.nextInt(0, 10)),
-                CoordinateArea(Coordinate(0, 0, 0), Coordinate(10, 10, 10)),
+                MapSharedInfo(
+                    CoordinateArea(Coordinate(0, 0, 0), Coordinate(10, 10, 10)),
+                    WeightsMap()
+                ),
                 "babbage.local",
                 50051
             )

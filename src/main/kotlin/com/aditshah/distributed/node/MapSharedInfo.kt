@@ -1,8 +1,9 @@
-package com.aditshah.distributed.infoserver
+package com.aditshah.distributed.node
 
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
 import com.aditshah.distributed.common.SharedInfo
+import com.aditshah.distributed.infoserver.WeightsMap
 import com.google.common.collect.Maps
 import io.ktor.util.InternalAPI
 import java.util.concurrent.ConcurrentMap

@@ -1,17 +1,16 @@
 package com.aditshah.distributed.node
 
 import com.aditshah.distributed.common.Coordinate
-import com.aditshah.distributed.common.CoordinateArea
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class RandomDiscreteDrone(
     startingLocation: Coordinate,
-    coordinateArea: CoordinateArea,
+    info: MapSharedInfo,
     host: String,
     port: Int
-) : Node(startingLocation, coordinateArea, host, port) {
+) : Node(startingLocation, info, host, port) {
 
 
     override fun move() {
@@ -20,6 +19,7 @@ class RandomDiscreteDrone(
             Random.nextInt(0, 10),
             Random.nextInt(0, 10)
         )
+        println("Moving to $location")
     }
 
     override fun start() {
@@ -30,6 +30,6 @@ class RandomDiscreteDrone(
                 Thread.sleep(500);
             }
         }
-        executor.awaitTermination(1000, TimeUnit.SECONDS)
+        executor.awaitTermination(1000, TimeUnit.DAYS)
     }
 }

@@ -4,6 +4,7 @@ option java_multiple_files = true;
 option java_package = "com.aditshah.distributed";
 option java_outer_classname = "DroneServerProto";
 option objc_class_prefix = "DSP";
+import "google/protobuf/empty.proto";
 
 package distributed;
 
@@ -28,10 +29,6 @@ message Status {
     string message = 1;
 }
 
-message RegistrationRequest {
-    string message = 1;
-}
-
 message WeightMessage {
     int32 value = 1;
     CoordinateMessage coordinate = 2;
@@ -43,4 +40,10 @@ service NodeInfoService {
     rpc GetLocation (NodeID) returns (CoordinateMessage);
     rpc PutWeight (WeightMessage) returns (Status);
     rpc GetWeight (CoordinateMessage) returns (WeightMessage);
+}
+
+service CommunicationService {
+    rpc RegisterNode (google.protobuf.Empty) returns (NodeID);
+    rpc PutLocation (stream CoordinateIDMessage) returns (google.protobuf.Empty);
+    rpc SubscribeLocations (NodeID) returns (stream CoordinateIDMessage);
 }

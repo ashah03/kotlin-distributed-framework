@@ -3,6 +3,7 @@ package com.aditshah.distributed.infoserver
 import com.aditshah.distributed.*
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
+import com.aditshah.distributed.node.MapSharedInfo
 import io.grpc.stub.StreamObserver
 import java.util.concurrent.atomic.AtomicInteger
 

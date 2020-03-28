@@ -12,7 +12,7 @@ class InfoServer {
     @Throws(IOException::class)
     private fun start() {
         server = ServerBuilder.forPort(port)
-                .addService(NodeInfoServiceImpl())
+                .addService(CommunicationServiceImpl())
                 .build()
                 .start()
         println("Server started, listening on $port")
