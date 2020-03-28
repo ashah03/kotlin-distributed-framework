@@ -1,12 +1,11 @@
 package com.aditshah.distributed.node
 
-import com.aditshah.distributed.CommunicationServiceClient
+import com.aditshah.distributed.*
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
-import com.aditshah.distributed.coordinateIDMessage
-import com.aditshah.distributed.coordinateMessage
-import com.aditshah.distributed.infoserver.WeightsMap
-import com.aditshah.distributed.nodeID
+import com.aditshah.distributed.server.WeightsMap
+import com.google.api.kgax.grpc.ClientStreamingCall
+import com.google.protobuf.Empty
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.runBlocking
 import java.io.Closeable
@@ -15,6 +14,8 @@ import kotlin.random.Random
 class NodeClient(private val node: Node) : Closeable {
 
     private val client: CommunicationServiceClient;
+    val locCall: ClientStreamingCall<CoordinateIDMessage, Empty>;
+
 //    private val client: NodeInfoServiceClient;
 
     init {
@@ -27,6 +28,7 @@ class NodeClient(private val node: Node) : Closeable {
                 node.port
             ).usePlaintext().build()
         )
+        locCall = client.putLocation()
     }
 
 
@@ -73,13 +75,13 @@ class NodeClient(private val node: Node) : Closeable {
 
     fun putLocation() {
         val coord = node.location;
-        println("Putting location $coord")
+        println("Putting location $coord for id ${node.id}")
+        val call = this.locCall;
         runBlocking {
-            client.putLocation()
-                    .requests.send(
+            call.requests.send(
                 coordinateIDMessage {
-                    this.id = nodeID { node.id };
-                    coordinateMessage {
+                    this.id = nodeID { this.value = node.id };
+                    this.coordinate = coordinateMessage {
                         this.x = coord.X;
                         this.y = coord.Y;
                         this.z = coord.Z
@@ -90,12 +92,16 @@ class NodeClient(private val node: Node) : Closeable {
     }
 
     fun subscribeLocation() {
-        val replies = client.subscribeLocations(nodeID { node.id })
+
+        val replies = client.subscribeLocations(nodeID { this.value = node.id })
                 .responses
         runBlocking {
             for (reply in replies) {
+                val id = reply.id.value
+                val coordinate = Coordinate(reply.coordinate)
+                println("Got location $coordinate from id $id")
                 node.info.putLocation(
-                    reply.id.value, Coordinate(reply.coordinate)
+                    id, coordinate
                 )
             }
         }

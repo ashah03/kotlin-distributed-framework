@@ -1,4 +1,4 @@
-package com.aditshah.distributed.infoserver;
+package com.aditshah.distributed.server;
 
 import com.aditshah.distributed.*
 import com.aditshah.distributed.common.Coordinate
@@ -16,6 +16,8 @@ public class CommunicationServiceImpl : CommunicationServiceGrpc.CommunicationSe
     private val currentID = AtomicInteger()
     private val nodeList = ArrayList<Int>();
     private val locationSubscribeQueues = HashMap<Int, BlockingQueue<Pair<Int, Coordinate>>>()
+//    private val locationSubscribeQueues = HashMap<Int, HashMap<Int, Channel<Pair<Int, Coordinate>>>>()
+
     private fun generateID() = currentID.getAndIncrement()
 
 
@@ -40,7 +42,11 @@ public class CommunicationServiceImpl : CommunicationServiceGrpc.CommunicationSe
                 val coordinate = Coordinate(value.coordinate)
                 println("Location $coordinate for $id received")
                 println("${value.coordinate.x} ${value.coordinate.y} ${value.coordinate.z}")
-                locationSubscribeQueues.forEach { it.value.put(Pair(id, coordinate)) }
+                locationSubscribeQueues
+                        .filter { it.key != id }
+                        .forEach {
+                            it.value.put(Pair(id, coordinate))
+                        }
             }
 
             override fun onError(t: Throwable) {
@@ -63,10 +69,10 @@ public class CommunicationServiceImpl : CommunicationServiceGrpc.CommunicationSe
                 println("Sending location ${pair.second} of ${pair.first} to $id")
                 responseObserver.onNext(
                     coordinateIDMessage {
-                        nodeID {
+                        this.id = nodeID {
                             this.value = pair.first
                         }
-                        coordinateMessage {
+                        this.coordinate = coordinateMessage {
                             pair.second.also {
                                 this.x = it.X;
                                 this.y = it.Y;
@@ -80,3 +86,5 @@ public class CommunicationServiceImpl : CommunicationServiceGrpc.CommunicationSe
         responseObserver.onCompleted();
     }
 }
+
+data class CoordinateID(val id: Int, val coordinate: Coordinate)

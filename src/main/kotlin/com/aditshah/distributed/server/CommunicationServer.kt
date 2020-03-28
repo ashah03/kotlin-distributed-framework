@@ -1,11 +1,11 @@
-package com.aditshah.distributed.infoserver
+package com.aditshah.distributed.server
 
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import java.io.IOException
 
 
-class InfoServer {
+class CommunicationServer {
 
     private var server: Server? = null
 
@@ -32,7 +32,7 @@ class InfoServer {
         @Throws(IOException::class, InterruptedException::class)
         @JvmStatic
         fun main(args: Array<String>) {
-            InfoServer()
+            CommunicationServer()
                     .apply {
                         start()
                         server?.awaitTermination()
