@@ -1,16 +1,17 @@
 package com.aditshah.distributed.node
 
 import com.aditshah.distributed.common.Coordinate
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import com.aditshah.distributed.common.CoordinateArea
+import kotlin.concurrent.thread
 import kotlin.random.Random
 
 class RandomDiscreteDrone(
     startingLocation: Coordinate,
-    info: MapSharedInfo,
+    coordinateArea: CoordinateArea,
+    weightMap: WeightsMap = WeightsMap(),
     host: String,
     port: Int
-) : Node(startingLocation, info, host, port) {
+) : Node(startingLocation, coordinateArea, weightMap, host, port) {
 
 
     override fun move() {
@@ -19,17 +20,20 @@ class RandomDiscreteDrone(
             Random.nextInt(0, 10),
             Random.nextInt(0, 10)
         )
+        val weight = Random.nextDouble(1.0, 11.0)
+        putWeight(location, weight)
         println("Moving to $location")
+        println("Changing weight of $location to $weight")
     }
 
-    override fun start() {
-        val executor = Executors.newFixedThreadPool(5)
-        executor.execute {
+    override fun onStart() {
+        thread {
             while (!stopped) {
                 move();
                 Thread.sleep(500);
             }
         }
-        executor.awaitTermination(1000, TimeUnit.DAYS)
+//        println("Should have stopped")
+//        executor.awaitTermination(1000, TimeUnit.DAYS)
     }
 }

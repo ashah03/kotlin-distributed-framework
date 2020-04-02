@@ -1,4 +1,5 @@
 VERSION = 0.1.1
+nodes = 1
 
 default: stubs build jars docker-build
 
@@ -33,7 +34,10 @@ docker-server:
 	docker run --rm -p 50051:50051 server:0.1.1
 
 docker-node:
-	docker run --rm node:0.1.1
+	#docker run --rm node:0.1.1
+	cd etc/docker && docker-compose up --scale node=$(nodes) --remove-orphans
+
+docker-run:
 
 docker-clean:
 	docker container rm $(docker ps -a -q)

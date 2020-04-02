@@ -17,6 +17,7 @@ USER $APPLICATION_USER
 WORKDIR /app
 
 COPY ./build/libs/kotlin-node.jar /app/kotlin-node.jar
+COPY csv /app/csv/
 
 CMD []
 

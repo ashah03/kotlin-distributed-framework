@@ -3,7 +3,6 @@ package com.aditshah.distributed.node
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
 import com.aditshah.distributed.common.SharedInfo
-import com.aditshah.distributed.server.WeightsMap
 import com.google.common.collect.Maps
 import io.ktor.util.InternalAPI
 import java.util.concurrent.ConcurrentMap
@@ -11,7 +10,9 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class MapSharedInfo(
     override val coordinateArea: CoordinateArea,
-    val weightMap: WeightsMap = WeightsMap()
+    val weightMap: WeightsMap = WeightsMap(
+        "csv/map10.csv"
+    )
 ) : SharedInfo {
 
     val locationMap: ConcurrentMap<Int, Coordinate> = Maps.newConcurrentMap()

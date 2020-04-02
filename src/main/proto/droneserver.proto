@@ -30,7 +30,7 @@ message Status {
 }
 
 message WeightMessage {
-    int32 value = 1;
+    double value = 1;
     CoordinateMessage coordinate = 2;
 }
 
@@ -43,7 +43,10 @@ service NodeInfoService {
 }
 
 service CommunicationService {
+    rpc HealthCheck (google.protobuf.Empty) returns (Status);
     rpc RegisterNode (google.protobuf.Empty) returns (NodeID);
     rpc PutLocation (stream CoordinateIDMessage) returns (google.protobuf.Empty);
     rpc SubscribeLocations (NodeID) returns (stream CoordinateIDMessage);
+    rpc PutWeight (stream WeightMessage) returns (google.protobuf.Empty);
+    rpc SubscribeWeights (NodeID) returns (stream WeightMessage);
 }

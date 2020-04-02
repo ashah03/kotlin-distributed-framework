@@ -7,10 +7,10 @@ import java.io.IOException
 
 class CommunicationServer {
 
-    private var server: Server? = null
+    var server: Server? = null
 
     @Throws(IOException::class)
-    private fun start() {
+    fun start() {
         server = ServerBuilder.forPort(port)
                 .addService(CommunicationServiceImpl())
                 .build()

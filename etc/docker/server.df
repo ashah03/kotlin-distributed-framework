@@ -17,6 +17,7 @@ USER $APPLICATION_USER
 WORKDIR /app
 
 COPY ./build/libs/kotlin-server.jar /app/kotlin-server.jar
+COPY csv /app/csv/
 
 EXPOSE 50051
 
