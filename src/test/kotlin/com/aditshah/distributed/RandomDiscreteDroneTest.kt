@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
-public class RandomDiscreteDroneTest {
+class RandomDiscreteDroneTest {
 
     @Test
     fun singleDroneUpTest() {

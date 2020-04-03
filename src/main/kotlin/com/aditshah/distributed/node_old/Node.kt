@@ -10,7 +10,7 @@ import com.google.protobuf.Empty
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.core.Closeable
-import mu.KotlinLogging
+import mu.KLogging
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
@@ -24,7 +24,7 @@ abstract class Node(
 
     private val client = NodeClient()
     private val info = MapSharedInfo(coordinateArea, weightMap)
-    protected val logger = KotlinLogging.logger {}
+//    protected val logger = KotlinLogging.logger {}
 
     init {
         require(info.coordinateArea.contains(startingLocation)) { "Location $startingLocation not in area ${info.coordinateArea}" }
@@ -212,7 +212,7 @@ abstract class Node(
 
     }
 
-    companion object {
+    companion object : KLogging() {
         @JvmStatic
         fun main(args: Array<String>) {
             val node = RandomDiscreteDrone(
