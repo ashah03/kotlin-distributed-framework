@@ -2,12 +2,11 @@ package com.aditshah.distributed;
 
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
-import com.aditshah.distributed.node.Node
-import com.aditshah.distributed.node.RandomDiscreteDrone
 import com.aditshah.distributed.node.WeightsMap
+import com.aditshah.distributed.node_old.Node
+import com.aditshah.distributed.node_old.RandomDiscreteDrone
 import com.aditshah.distributed.server.CommunicationServer
-import org.amshove.kluent.shouldEqual
-import org.amshove.kluent.shouldNotEqual
+import org.amshove.kluent.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import kotlin.concurrent.thread
@@ -25,7 +24,7 @@ public class RandomDiscreteDroneTest {
             50051
         )
         node.stopped shouldEqual false
-        node.start()
+        invoking { node.start() } `should not throw` AnyException
         node.stopped shouldEqual false
         node.id shouldNotEqual 0
         node.stop()

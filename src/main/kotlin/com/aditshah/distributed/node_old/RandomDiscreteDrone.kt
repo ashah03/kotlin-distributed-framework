@@ -1,7 +1,8 @@
-package com.aditshah.distributed.node
+package com.aditshah.distributed.node_old
 
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
+import com.aditshah.distributed.node.WeightsMap
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
