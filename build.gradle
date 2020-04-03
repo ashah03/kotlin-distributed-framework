@@ -69,7 +69,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "com.github.pambrose:etcd-recipes:$etcdRecipesVersion"
+//    implementation "com.github.pambrose:etcd-recipes:$etcdRecipesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion"
     implementation "io.etcd:jetcd-all:${jetcdVersion}"
     implementation "com.github.pambrose:common-utils:${utilsVersion}"
