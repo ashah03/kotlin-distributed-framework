@@ -10,6 +10,7 @@ import com.google.protobuf.Empty
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.core.Closeable
+import mu.KotlinLogging
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
@@ -23,7 +24,7 @@ abstract class Node(
 
     private val client = NodeClient()
     private val info = MapSharedInfo(coordinateArea, weightMap)
-//    protected val logger = KotlinLogging.logger {}
+    protected val logger = KotlinLogging.logger {}
 
     init {
         require(info.coordinateArea.contains(startingLocation)) { "Location $startingLocation not in area ${info.coordinateArea}" }
@@ -35,7 +36,7 @@ abstract class Node(
             require(info.coordinateArea.contains(location)) { "Location $location not in area ${info.coordinateArea}" }
             client.putLocation()
             field = value
-//            logger.info { "Moving to $location" }
+            logger.info { "Moving to $location" }
         }
 
     var id = -1
@@ -45,7 +46,7 @@ abstract class Node(
                 if (!isRegistered) {
                     val e =
                         NodeNotRegisteredException("Attempted to get ID, but node not registered")
-//                    logger.error(e) { "Attempted to get ID, but node not registered" }
+                    logger.error(e) { "Attempted to get ID, but node not registered" }
                     throw e
                 } else {
                     throw RuntimeException("node registered, but ID not assigned")
@@ -109,7 +110,7 @@ abstract class Node(
 //    private val client: NodeInfoServiceClient;
 
         init {
-//            logger.info { "Connecting to server at $host:$port" }
+            logger.info { "Connecting to server at $host:$port" }
             client = CommunicationServiceClient.create(
                 channel = ManagedChannelBuilder.forAddress(
                     host,
@@ -118,18 +119,18 @@ abstract class Node(
                         .usePlaintext()
                         .build()
             )
-//            logger.info { "Connected to server" }
+            logger.info { "Connected to server" }
             locCall = client.putLocation()
-//            logger.debug { "Location stream established" }
+            logger.debug { "Location stream established" }
             weightCall = client.putWeight()
-//            logger.debug { "Weight stream established" }
+            logger.debug { "Weight stream established" }
         }
 
         fun registerNode(): Int {
-//            logger.info { "Registering node" }
+            logger.info { "Registering node" }
             return runBlocking {
                 val id = client.registerNode()
-//                logger.info { "Node registered. id = ${id.value}" }
+                logger.info { "Node registered. id = ${id.value}" }
                 id.value;
             }
         }
@@ -137,7 +138,7 @@ abstract class Node(
         fun putLocation() {
             val coord = location;
             val ID = id;
-//            logger.debug { "Sending location $coord for id $id to server" }
+            logger.debug { "Sending location $coord for id $id to server" }
             val call = this.locCall;
             runBlocking {
                 call.requests.send(
@@ -160,7 +161,7 @@ abstract class Node(
                 for (reply in replies) {
                     val id = reply.id.value
                     val coordinate = Coordinate(reply.coordinate)
-//                    logger.debug { "Received location $coordinate from id $id" }
+                    logger.debug { "Received location $coordinate from id $id" }
                     info.putLocation(
                         id, coordinate
                     )
@@ -170,7 +171,7 @@ abstract class Node(
 
         fun putWeight(coord: Coordinate) {
             val weight = info.getWeight(coord)
-//            logger.debug { "Putting weight $weight for coord $coord" }
+            logger.debug { "Putting weight $weight for coord $coord" }
             val call = this.weightCall
             runBlocking {
                 call.requests.send(
@@ -194,7 +195,7 @@ abstract class Node(
                 for (reply in replies) {
                     val coordinate = Coordinate(reply.coordinate)
                     val weight = reply.value
-//                    logger.debug { "Got weight $weight for coordinate $coordinate" }
+                    logger.debug { "Got weight $weight for coordinate $coordinate" }
                     info.putWeight(
                         coordinate, weight
                     )
