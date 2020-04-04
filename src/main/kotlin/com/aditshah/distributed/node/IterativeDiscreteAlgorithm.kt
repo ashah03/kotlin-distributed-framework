@@ -5,15 +5,17 @@ import com.aditshah.distributed.common.CoordinateArea
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
-abstract class IterativeDroneAlgorithm : NodeAlgorithm {
+abstract class IterativeDiscreteAlgorithm : NodeAlgorithm() {
 
-    override val api = GrpcNodeAPI(
-        Coordinate(Random.nextInt(0, 10), Random.nextInt(0, 10), Random.nextInt(0, 10)),
-        CoordinateArea(Coordinate(0, 0, 0), Coordinate(10, 10, 10)),
-        WeightsMap("csv/map10.csv"),
-        "babbage.local",
-        50051
-    )
+    init {
+        init(
+            startingLocation = Coordinate(Random.nextInt(0, 10), Random.nextInt(0, 10), Random.nextInt(0, 10)),
+            coordinateArea = CoordinateArea(Coordinate(0, 0, 0), Coordinate(10, 10, 10)),
+            weightMap = WeightsMap("csv/map10.csv"),
+            host = "babbage.local",
+            port = 50051
+        )
+    }
 
     override fun start() {
         api.registerNode()

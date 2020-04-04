@@ -1,16 +1,16 @@
 package com.aditshah.distributed;
 
-import com.aditshah.distributed.node.IterativeRandomDroneAlgorithm
+import com.aditshah.distributed.node.IterativeDiscreteRandomAlgorithm
 import com.aditshah.distributed.server.CommunicationServer
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import kotlin.concurrent.thread
 
-class IterativeRandomDroneAlgorithmTest {
+class IterativeDiscreteRandomAlgorithmTest {
 
     @Test
     fun singleDroneUpTest() {
-        val alg = IterativeRandomDroneAlgorithm()
+        val alg = IterativeDiscreteRandomAlgorithm()
         alg.start()
         Thread.sleep(5000)
         alg.stop()
