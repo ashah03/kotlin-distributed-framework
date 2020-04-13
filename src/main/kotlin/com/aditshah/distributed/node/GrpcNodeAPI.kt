@@ -3,7 +3,6 @@ package com.aditshah.distributed.node;
 import com.aditshah.distributed.*
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
-import com.aditshah.distributed.node_old.Node
 import com.google.api.kgax.grpc.ClientStreamingCall
 import com.google.protobuf.Empty
 import io.grpc.ManagedChannelBuilder
@@ -11,6 +10,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.io.core.Closeable
 import kotlin.concurrent.thread
 
+/**
+ * This class is an implementation of NodeAPI, which uses a gRPC communications backend to simulate the communication
+ * between nodes.
+ *
+ */
 class GrpcNodeAPI(
     private val startingLocation: Coordinate,
     private val coordinateArea: CoordinateArea,
@@ -34,12 +38,8 @@ class GrpcNodeAPI(
         id = client.registerNode()
         isRegistered = true;
         client.putLocation(startingLocation);
-        thread {
-            client.subscribeLocation();
-        }
-        thread {
-            client.subscribeWeights();
-        }
+        thread { client.subscribeLocation() }
+        thread { client.subscribeWeights() }
 
         return id;
     }
@@ -49,10 +49,12 @@ class GrpcNodeAPI(
         client.close();
     }
 
+    class NodeNotRegisteredException(message: String = "") : RuntimeException()
+
     override fun getID(): Int {
         if (id == -1) {
             if (!isRegistered) {
-                val e = Node.NodeNotRegisteredException("Attempted to get ID, but node not registered")
+                val e = NodeNotRegisteredException("Attempted to get ID, but node not registered")
 //                logger.error(e) { "Attempted to get ID, but node not registered" }
                 throw e
             } else {
@@ -65,13 +67,14 @@ class GrpcNodeAPI(
     }
 
     private fun checkRegistered() {
-        if (!isRegistered) throw Node.NodeNotRegisteredException("")
+        if (!isRegistered) throw NodeNotRegisteredException("")
     }
 
     override fun putLocation(coord: Coordinate) {
         checkRegistered()
         require(info.coordinateArea.contains(coord)) { "Location $coord not in area ${info.coordinateArea}" }
         client.putLocation(coord)
+        info.putLocation(id, coord)
 //        logger.info { "Moving to $coord" }
 
     }
@@ -95,7 +98,10 @@ class GrpcNodeAPI(
         return stopped
     }
 
-    inner class NodeClient : Closeable {
+    /**
+     * This class has the gRPC calls to the Communication Server
+     */
+    private inner class NodeClient : Closeable {
 
         private lateinit var client: CommunicationServiceClient;
         private lateinit var locCall: ClientStreamingCall<CoordinateIDMessage, Empty>;

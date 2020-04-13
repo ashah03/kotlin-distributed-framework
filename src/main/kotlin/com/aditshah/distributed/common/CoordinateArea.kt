@@ -10,19 +10,47 @@ data class CoordinateArea(val topLeft: Coordinate, val bottomRight: Coordinate) 
                (coord.X <= bottomRight.X && coord.Y <= bottomRight.Y && coord.Z <= bottomRight.Z)
     }
 
-    fun genRandomLocation(): Coordinate {
+    fun genRandomLocationDouble(): Coordinate {
         val x = if (topLeft.X == bottomRight.X) topLeft.X else Random.nextDouble(
             topLeft.X,
             bottomRight.X
-        ).toInt().toDouble()
+        )
+                .toInt()
+                .toDouble()
         val y = if (topLeft.Y == bottomRight.Y) topLeft.X else Random.nextDouble(
             topLeft.Y,
             bottomRight.Y
-        ).toInt().toDouble()
+        )
+                .toInt()
+                .toDouble()
         val z = if (topLeft.Z == bottomRight.Z) topLeft.X else Random.nextDouble(
             topLeft.Z,
             bottomRight.Z
-        ).toInt().toDouble()
+        )
+                .toInt()
+                .toDouble()
+        return Coordinate(x, y, z)
+    }
+
+    fun genRandomLocationInt(): Coordinate {
+        val x = if (topLeft.X == bottomRight.X) topLeft.X else Random.nextInt(
+            topLeft.X.toInt(),
+            bottomRight.X.toInt()
+        )
+                .toInt()
+                .toDouble()
+        val y = if (topLeft.Y == bottomRight.Y) topLeft.X else Random.nextInt(
+            topLeft.Y.toInt(),
+            bottomRight.Y.toInt()
+        )
+                .toInt()
+                .toDouble()
+        val z = if (topLeft.Z == bottomRight.Z) topLeft.X else Random.nextInt(
+            topLeft.Z.toInt(),
+            bottomRight.Z.toInt()
+        )
+                .toInt()
+                .toDouble()
         return Coordinate(x, y, z)
     }
 }

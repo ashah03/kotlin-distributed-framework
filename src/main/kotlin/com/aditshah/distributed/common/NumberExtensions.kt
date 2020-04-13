@@ -1,9 +1,15 @@
 package com.aditshah.distributed.common
 
 import kotlin.random.Random
+import kotlin.time.Duration
 
-fun Int.random() = Random.nextInt(this)
+val Int.random: Int
+    get() = Random.nextInt(this)
 
-fun Double.random() = Random.nextDouble(this)
+val Double.random: Double
+    get() = Random.nextDouble(this)
 
-fun IntRange.random() = Random.nextInt(this.first, this.last)
+val IntRange.random: Int
+    get() = Random.nextInt(this.first, this.last)
+
+fun sleep(duration: Duration) = Thread.sleep(duration.toLongMilliseconds())

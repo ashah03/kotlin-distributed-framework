@@ -9,6 +9,11 @@ abstract class NodeAlgorithm {
     lateinit var api: NodeAPI
     var initialized: Boolean = false
 
+    fun init(api: GrpcNodeAPI) {
+        this.api = api
+        initialized = true
+    }
+
     fun init(
         startingLocation: Coordinate,
         coordinateArea: CoordinateArea,
@@ -27,7 +32,7 @@ abstract class NodeAlgorithm {
         initialized = true
     }
 
-    private fun getHostname(): String {
+    fun getHostname(): String {
         return InetAddress.getLocalHost().hostName
     }
 
