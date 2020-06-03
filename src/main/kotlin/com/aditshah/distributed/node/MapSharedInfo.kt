@@ -5,8 +5,21 @@ import com.aditshah.distributed.common.CoordinateArea
 import com.aditshah.distributed.common.SharedInfo
 import com.google.common.collect.Maps
 import io.ktor.util.InternalAPI
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.atomic.AtomicInteger
+
+@Serializable
+data class LocationMapObj(val map: Map<Int, Coordinate>) {
+    fun toJson(): String = Json.stringify(serializer(), this)
+}
+
+@Serializable
+data class WeightMapObj(val map: Map<Coordinate, Double>) {
+    fun toJson(): String = Json(JsonConfiguration(allowStructuredMapKeys = true)).stringify(serializer(), this)
+}
 
 class MapSharedInfo(
     override val coordinateArea: CoordinateArea,
@@ -43,7 +56,7 @@ class MapSharedInfo(
     }
 
     override fun getWeight(coord: Coordinate): Double {
-        return weightMap[coord] ?: throw AssertionError("weight is null")
+        return weightMap[coord] ?: throw AssertionError("weight at $coord is null")
     }
 
     //fun toJson() = Json.stringify(serializer(), locationMap.toMap())

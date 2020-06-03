@@ -1,5 +1,8 @@
-package com.aditshah.distributed_old
+package com.aditshah.distributed.visualization
 
+import com.aditshah.distributed.node.LocationMapObj
+import com.aditshah.distributed.node.MapSharedInfo
+import com.aditshah.distributed.node.WeightMapObj
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
@@ -9,6 +12,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.response.header
+import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
@@ -17,9 +21,12 @@ import io.ktor.serialization.serialization
 import io.ktor.server.engine.ShutDownUrl
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import org.slf4j.event.Level
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 suspend fun ApplicationCall.respondWith(content: String, contentType: ContentType) {
     response.header("cache-control", "must-revalidate,no-cache,no-store")
@@ -31,7 +38,8 @@ suspend fun ApplicationCall.respondWith(content: String, contentType: ContentTyp
     respondText(content, contentType)
 }
 
-class Server(port: Int, info: MapSharedInfo) {
+class VisualizationServer(info: MapSharedInfo, port: Int = 8080) {
+//    val info = node.getInfo()
 
     val server = embeddedServer(Netty, port = port) {
         install(ContentNegotiation) {
@@ -69,28 +77,46 @@ class Server(port: Int, info: MapSharedInfo) {
                 resources("static")
             }
 
-//            get("/drone") {
-//                val strID = call.parameters["id"]
-//                if (strID == null) call.respond(HttpStatusCode.BadRequest, "No ID specified")
-//                val id: Int = Integer.parseInt(strID)
-//                if (info.getIDs()
-//                            .contains(id)
-//                ) {
-//                    call.respondWith(
-//                        info.getLocation(id)
-//                                .toJson(), ContentType.Application.Json
-//                    )
-//                } else {
-//                    call.respond(HttpStatusCode.BadRequest, "400: Invalid ID")
-//                }
-//
-//            }
+            get("/drone") {
+                val strID = call.parameters["id"]
+                if (strID == null) call.respond(HttpStatusCode.BadRequest, "No ID specified")
+                val id: Int = Integer.parseInt(strID)
+                if (info.getIDs()
+                            .contains(id)
+                ) {
+                    call.respondWith(
+                        info.getLocation(id)
+                                .toJson(), ContentType.Application.Json
+                    )
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, "400: Invalid ID")
+                }
+
+            }
+
 
             get("/drones") {
                 //call.respondWith(info.toJson(), ContentType.Application.Json)
                 val json = LocationMapObj(info.locationMap.toMap()).toJson()
                 call.respondWith(json, ContentType.Application.Json)
 //                call.respond(info.locationMap.toMap())
+            }
+
+            get("/map") {
+                println("Returning map")
+                val json = WeightMapObj(info.weightMap.map.toMap()).toJson()
+                call.respondWith(json, ContentType.Application.Json)
+            }
+
+            get("/size") {
+                val x: Int = (info.coordinateArea.bottomRight.X - info.coordinateArea.topLeft.X).roundToInt()
+                val y: Int = (info.coordinateArea.bottomRight.Y - info.coordinateArea.topLeft.Y).roundToInt()
+                call.respondWith(XYSize(x, y).toJson(), ContentType.Application.Json)
+            }
+
+            get("/data") {
+                val data = Data(WeightMapObj(info.weightMap.map.toMap()), LocationMapObj(info.locationMap.toMap()))
+                call.respondWith(data.toJson(), ContentType.Application.Json)
             }
         }
     }
@@ -104,30 +130,12 @@ class Server(port: Int, info: MapSharedInfo) {
     }
 }
 
-fun main() {
-    val info = MapSharedInfo(CoordinateArea(Coordinate(0, 0), Coordinate(100, 100)), WeightsMap("csv/map10.csv"))
-    val server = Server(8080, info)
-    server.start()
-    for (i in 0..2) {
-        val drone = MyDrone1(i, Coordinate(0, 0), info)
-        drone.start()
-    }
-    //    sleep(10.seconds)
-    //    for (drone in MyDrone1.droneArray) {
-    //        drone.stop()
-    //    }
-    //    server.stop()
-    println("bye")
+@Serializable
+data class XYSize(val x: Int, val y: Int) {
+    fun toJson(): String = Json.stringify(serializer(), this)
 }
 
-//    for (i in 1..3) {
-//        thread {
-//            val drone = MyDrone1(i, com.aditshah.distributed.common.Coordinate(0, 0), info)
-//            while (true) {
-//                sleep((i * 1).seconds)
-//                drone.move()
-//            }
-//        }
-//    }
-
-//}
+@Serializable
+data class Data(val weights: WeightMapObj, val drones: LocationMapObj) {
+    fun toJson(): String = Json(JsonConfiguration(allowStructuredMapKeys = true)).stringify(serializer(), this)
+}

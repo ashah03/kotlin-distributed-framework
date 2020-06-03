@@ -5,24 +5,27 @@ import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.node.WeightsMap
 import com.google.protobuf.Empty
 import io.grpc.stub.StreamObserver
+import kotlinx.atomicfu.locks.withLock
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.ReentrantLock
 
-public class CommunicationServiceImpl : CommunicationServiceGrpc.CommunicationServiceImplBase() {
+public class CommunicationServiceImpl() : CommunicationServiceGrpc.CommunicationServiceImplBase() {
 
     private val currentID = AtomicInteger()
     private val nodeList = ArrayList<Int>();
-//    private val locationSubscribeQueues = HashMap<Int, BlockingQueue<Pair<Int, Coordinate>>>()
 
+    //    private val locationSubscribeQueues = HashMap<Int, BlockingQueue<Pair<Int, Coordinate>>>()
     private val updateIDQueues = ConcurrentHashMap<Int, BlockingQueue<Int>>()
     private val currentLocations = ConcurrentHashMap<Int, Coordinate>()
 
     private val updateCoordinateQueues = ConcurrentHashMap<Int, BlockingQueue<Coordinate>>()
-    private val currentWeights = WeightsMap("csv/map10.csv")
+    private lateinit var currentWeights: WeightsMap
 
+    private val weightsLock = ReentrantLock()
     private fun generateID() = currentID.incrementAndGet()
 
     override fun healthCheck(request: Empty, responseObserver: StreamObserver<Status>) {
@@ -42,6 +45,22 @@ public class CommunicationServiceImpl : CommunicationServiceGrpc.CommunicationSe
                 this.value = id
             }
         )
+        responseObserver.onCompleted()
+    }
+
+    override fun setInitialWeights(request: InitialWeightsMessage, responseObserver: StreamObserver<Empty>) {
+        val weights = request.weightsList
+        weightsLock.withLock {
+            if (!::currentWeights.isInitialized) {
+                println(::currentWeights.isInitialized)
+                val map = WeightsMap()
+                for (weight in weights) {
+                    map[Coordinate(weight.coordinate)] = weight.value
+                }
+                currentWeights = map
+            }
+        }
+        responseObserver.onNext(Empty.getDefaultInstance())
         responseObserver.onCompleted()
     }
 

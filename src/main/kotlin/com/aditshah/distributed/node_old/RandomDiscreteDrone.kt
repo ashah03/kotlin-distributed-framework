@@ -12,7 +12,7 @@ class RandomDiscreteDrone(
     weightMap: WeightsMap = WeightsMap(),
     host: String,
     port: Int
-) : Node(startingLocation, coordinateArea, weightMap, host, port) {
+) : OldNode(startingLocation, coordinateArea, weightMap, host, port) {
 
 
     override fun move() {

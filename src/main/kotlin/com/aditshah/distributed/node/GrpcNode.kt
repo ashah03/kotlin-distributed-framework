@@ -11,17 +11,17 @@ import kotlinx.io.core.Closeable
 import kotlin.concurrent.thread
 
 /**
- * This class is an implementation of NodeAPI, which uses a gRPC communications backend to simulate the communication
- * between nodes.
+ * This class is an implementation of Node, which uses a gRPC communications backend to simulate the communication
+ * between nodes. The goal is to have the communications happen in the background as seamlessly as possible
  *
  */
-class GrpcNodeAPI(
+class GrpcNode(
     private val startingLocation: Coordinate,
     private val coordinateArea: CoordinateArea,
     private val weightMap: WeightsMap,
     private val host: String,
     private val port: Int
-) : NodeAPI {
+) : Node {
 
     private var isRegistered: Boolean = false
     private val client = NodeClient()
@@ -36,8 +36,9 @@ class GrpcNodeAPI(
     override fun registerNode(): Int {
         client.connect()
         id = client.registerNode()
+        client.setInitialWeights()
         isRegistered = true;
-        client.putLocation(startingLocation);
+        putLocation(startingLocation);
         thread { client.subscribeLocation() }
         thread { client.subscribeWeights() }
 
@@ -66,6 +67,14 @@ class GrpcNodeAPI(
 
     }
 
+    override fun getAllIDs(): MutableSet<Int> {
+        return info.locationMap.keys
+    }
+
+    override fun getCoordinateArea(): CoordinateArea {
+        return coordinateArea
+    }
+
     private fun checkRegistered() {
         if (!isRegistered) throw NodeNotRegisteredException("")
     }
@@ -76,7 +85,6 @@ class GrpcNodeAPI(
         client.putLocation(coord)
         info.putLocation(id, coord)
 //        logger.info { "Moving to $coord" }
-
     }
 
     override fun getLocation(id: Int): Coordinate {
@@ -96,6 +104,10 @@ class GrpcNodeAPI(
 
     override fun isStopped(): Boolean {
         return stopped
+    }
+
+    override fun getInfo(): MapSharedInfo {
+        return info
     }
 
     /**
@@ -134,6 +146,29 @@ class GrpcNodeAPI(
                 val id = client.registerNode()
 //                logger.info { "Node registered. id = ${id.value}" }
                 id.value;
+            }
+        }
+
+        fun setInitialWeights() {
+            runBlocking {
+                client.setInitialWeights(
+                    initialWeightsMessage {
+                        val weightList = mutableListOf<WeightMessage>()
+                        for ((coordinate, weight) in weightMap.map) {
+                            weightList.add(weightMessage {
+                                this.coordinate = coordinateMessage {
+                                    coordinate.also {
+                                        this.x = it.X
+                                        this.y = it.Y
+                                        this.z = it.Z
+                                    }
+                                }
+                                this.value = weight
+                            })
+                        }
+                        this.weights = weightList
+                    }
+                )
             }
         }
 
@@ -203,6 +238,7 @@ class GrpcNodeAPI(
                 }
             }
         }
+
 
         override fun close() {
             client.shutdownChannel();

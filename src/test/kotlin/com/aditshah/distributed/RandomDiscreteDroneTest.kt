@@ -3,7 +3,7 @@ package com.aditshah.distributed;
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
 import com.aditshah.distributed.node.WeightsMap
-import com.aditshah.distributed.node_old.Node
+import com.aditshah.distributed.node_old.OldNode
 import com.aditshah.distributed.node_old.RandomDiscreteDrone
 import com.aditshah.distributed.server.CommunicationServer
 import org.amshove.kluent.*
@@ -56,7 +56,7 @@ class RandomDiscreteDroneTest {
 
     @Test
     fun multiDroneTestSmall() {
-        val nodeList = mutableListOf<Node>()
+        val nodeList = mutableListOf<OldNode>()
         repeat(5) {
             nodeList.add(
                 it, RandomDiscreteDrone(

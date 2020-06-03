@@ -14,7 +14,7 @@ import mu.KLogging
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
-abstract class Node(
+abstract class OldNode(
     startingLocation: Coordinate,
     coordinateArea: CoordinateArea,
     weightMap: WeightsMap,

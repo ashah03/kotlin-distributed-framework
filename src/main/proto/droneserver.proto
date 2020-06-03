@@ -34,6 +34,10 @@ message WeightMessage {
     CoordinateMessage coordinate = 2;
 }
 
+message InitialWeightsMessage {
+    repeated WeightMessage weights = 1;
+}
+
 service NodeInfoService {
     rpc RegisterNode (CoordinateMessage) returns (NodeID);
     rpc PutLocation (CoordinateIDMessage) returns (Status);
@@ -45,8 +49,10 @@ service NodeInfoService {
 service CommunicationService {
     rpc HealthCheck (google.protobuf.Empty) returns (Status);
     rpc RegisterNode (google.protobuf.Empty) returns (NodeID);
+    rpc SetInitialWeights (InitialWeightsMessage) returns (google.protobuf.Empty);
     rpc PutLocation (stream CoordinateIDMessage) returns (google.protobuf.Empty);
     rpc SubscribeLocations (NodeID) returns (stream CoordinateIDMessage);
     rpc PutWeight (stream WeightMessage) returns (google.protobuf.Empty);
     rpc SubscribeWeights (NodeID) returns (stream WeightMessage);
+
 }

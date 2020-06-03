@@ -5,7 +5,7 @@ import io.grpc.ServerBuilder
 import java.io.IOException
 
 
-class CommunicationServer {
+class CommunicationServer() {
 
     var server: Server? = null
 
@@ -24,6 +24,7 @@ class CommunicationServer {
                         server?.shutdown()
                         System.err.println("*** server shut down")
                     })
+        server?.awaitTermination()
     }
 
     companion object {
@@ -32,11 +33,11 @@ class CommunicationServer {
         @Throws(IOException::class, InterruptedException::class)
         @JvmStatic
         fun main(args: Array<String>) {
-            CommunicationServer()
-                    .apply {
-                        start()
-                        server?.awaitTermination()
-                    }
+            CommunicationServer().start()
+//                    .apply {
+//                        start()
+//                        server?.awaitTermination()
+//                    }
         }
     }
 }

@@ -53,4 +53,8 @@ data class CoordinateArea(val topLeft: Coordinate, val bottomRight: Coordinate) 
                 .toDouble()
         return Coordinate(x, y, z)
     }
+
+    fun genRandomLocationInt2D(): Coordinate {
+        return genRandomLocationInt().apply { Z = 0.0 }
+    }
 }
