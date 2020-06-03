@@ -17,8 +17,13 @@ fun main() {
             weightMap = WeightsMap("csv/map20norm.csv")
         }
 
+
         val coverageRadius = 2.237
         val movementRadius = 1.415
+
+        visualization {
+            addComponent("/coverageRadius", coverageRadius)
+        }
 
         algorithm(delayPeriod = 1.seconds) {
             val currentLocation = getLocation(getID())

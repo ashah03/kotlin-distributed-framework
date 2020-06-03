@@ -14,6 +14,7 @@ import io.ktor.http.content.static
 import io.ktor.response.header
 import io.ktor.response.respond
 import io.ktor.response.respondText
+import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.serialization.DefaultJsonConfiguration
@@ -24,6 +25,7 @@ import io.ktor.server.netty.Netty
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.serializer
 import org.slf4j.event.Level
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
@@ -38,8 +40,13 @@ suspend fun ApplicationCall.respondWith(content: String, contentType: ContentTyp
     respondText(content, contentType)
 }
 
-class VisualizationServer(info: MapSharedInfo, port: Int = 8080) {
+class VisualizationServer(
+    info: MapSharedInfo,
+    val additionalComponents: MutableList<Component> = mutableListOf(),
+    port: Int = 8080
+) {
 //    val info = node.getInfo()
+
 
     val server = embeddedServer(Netty, port = port) {
         install(ContentNegotiation) {
@@ -118,6 +125,9 @@ class VisualizationServer(info: MapSharedInfo, port: Int = 8080) {
                 val data = Data(WeightMapObj(info.weightMap.map.toMap()), LocationMapObj(info.locationMap.toMap()))
                 call.respondWith(data.toJson(), ContentType.Application.Json)
             }
+
+            additionalComponents.forEach { createGet(it) }
+
         }
     }
 
@@ -128,6 +138,7 @@ class VisualizationServer(info: MapSharedInfo, port: Int = 8080) {
     fun stop() {
         server.stop(0, 0, TimeUnit.SECONDS)
     }
+
 }
 
 @Serializable
@@ -139,3 +150,20 @@ data class XYSize(val x: Int, val y: Int) {
 data class Data(val weights: WeightMapObj, val drones: LocationMapObj) {
     fun toJson(): String = Json(JsonConfiguration(allowStructuredMapKeys = true)).stringify(serializer(), this)
 }
+
+class Component(val path: String, val data: Any)
+
+fun Routing.createGet(component: Component) {
+    with(component) {
+        get(path) {
+            if (data is Serializable) {
+                call.respondWith(data.toJson(), ContentType.Application.Json)
+            } else {
+                call.respondWith(data.toString(), ContentType.Application.Json)
+            }
+        }
+    }
+}
+
+fun Serializable.toJson(): String = Json(JsonConfiguration(allowStructuredMapKeys = true)).stringify(serializer(), this)
+

@@ -3,7 +3,7 @@ var canvasSizeY = 700
 
 var scaleX = 0
 var scaleY = 0
-
+var coverageRadius = 0
 function setup() {
     createCanvas(canvasSizeX, canvasSizeY)
     frameRate(10)
@@ -13,6 +13,9 @@ function setup() {
         var y = obj["y"]
         scaleX = canvasSizeX / (x + 1)
         scaleY = canvasSizeY / (y + 1)
+    })
+    httpGet("http://localhost:8080/coverageRadius", function (response) {
+        coverageRadius = JSON.parse(response)
     })
 
 }
@@ -46,6 +49,8 @@ function draw() {
             // var padding = radius + 5
             fill(255, 255, 255)
             circle(drones[drone].X * scaleX + scaleX / 2, drones[drone].Y * scaleY + scaleY / 2, radius)
+            noFill()
+            circle(drones[drone].X * scaleX + scaleX / 2, drones[drone].Y * scaleY + scaleY / 2, coverageRadius * scaleX * 2)
             print(concat(concat("Displaying circle at", drones[drone].X), drones[drone].Y))
         }
     })

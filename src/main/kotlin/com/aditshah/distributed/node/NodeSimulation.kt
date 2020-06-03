@@ -5,6 +5,7 @@ package com.aditshah.distributed.node
 import com.aditshah.distributed.common.Coordinate
 import com.aditshah.distributed.common.CoordinateArea
 import com.aditshah.distributed.server.CommunicationServer
+import com.aditshah.distributed.visualization.Component
 import com.aditshah.distributed.visualization.VisualizationServer
 import java.net.InetAddress
 import java.util.concurrent.CountDownLatch
@@ -15,8 +16,13 @@ abstract class NodeSimulation {
 
     private val communicationServer = CommunicationServer()
     private lateinit var info: MapSharedInfo
+    lateinit var visComponents: MutableList<Component>
     private val visualizationServer: VisualizationServer by lazy {
-        VisualizationServer(info)
+        if (::visComponents.isInitialized) {
+            VisualizationServer(info, visComponents)
+        } else {
+            VisualizationServer(info)
+        }
     }
     private val latch = CountDownLatch(1)
     var numNodes = 0
