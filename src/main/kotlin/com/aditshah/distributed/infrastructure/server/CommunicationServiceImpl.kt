@@ -13,6 +13,10 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 
+/*
+ * This class contains the implementation of the gRPC functions defined in the proto file, src/main/proto/droneserver.proto
+ * It manages the forwarding of data to other nodes when a node makes a "broadcast" message
+ */
 public class CommunicationServiceImpl() : CommunicationServiceGrpc.CommunicationServiceImplBase() {
 
     private val currentID = AtomicInteger()

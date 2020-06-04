@@ -2,6 +2,10 @@
 
 package com.aditshah.distributed.infrastructure.common
 
+/*
+ * This interface is used within the GrpcNode class to keep track of the information sent by the server locally on
+ * each node.
+ */
 interface SharedInfo {
     val coordinateArea: CoordinateArea
     fun putLocation(id: Int, coord: Coordinate)

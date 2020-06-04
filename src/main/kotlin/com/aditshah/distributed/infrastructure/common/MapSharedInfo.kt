@@ -18,6 +18,9 @@ data class WeightMapObj(val map: Map<Coordinate, Double>) {
     fun toJson(): String = Json(JsonConfiguration(allowStructuredMapKeys = true)).stringify(serializer(), this)
 }
 
+/*
+ * This class is a specific implementation of SharedInfo that uses maps to store all of the data
+ */
 class MapSharedInfo(
     override val coordinateArea: CoordinateArea,
     val weightMap: WeightsMap = WeightsMap(

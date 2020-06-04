@@ -1,3 +1,8 @@
+/*
+ * This file is an example of how to use the IterativeDiscreteSimulation class to create a simulation.
+ * It uses one of the system declarations from Systems.kt and the LLL2D() algorithm from Algorithms.Kt
+ */
+
 package com.aditshah.distributed.simulations
 
 import com.aditshah.distributed.infrastructure.simulation.IterativeDiscreteSimulation

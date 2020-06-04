@@ -1,5 +1,9 @@
 package com.aditshah.distributed.infrastructure.common
 
+/*
+ * This class provides useful number extension functions; currently it creates an easy syntax for generating random numbers
+ * and sleeping regardless of the unit
+ */
 import kotlin.random.Random
 import kotlin.time.Duration
 
