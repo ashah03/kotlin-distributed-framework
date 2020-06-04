@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.aditshah.distributed";
+option java_outer_classname = "DroneServerProto";
+option objc_class_prefix = "DSP";
+import "google/protobuf/empty.proto";
+
+package distributed;
+
+// The request message containing the user's name.
+
+message NodeID {
+    int32 value = 1;
+}
+
+message CoordinateMessage {
+    double x = 1;
+    double y = 2;
+    double z = 3;
+}
+
+message CoordinateIDMessage {
+    NodeID id = 1;
+    CoordinateMessage coordinate = 2;
+}
+
+message Status {
+    string message = 1;
+}
+
+message WeightMessage {
+    double value = 1;
+    CoordinateMessage coordinate = 2;
+}
+
+message InitialWeightsMessage {
+    repeated WeightMessage weights = 1;
+}
+
+service NodeInfoService {
+    rpc RegisterNode (CoordinateMessage) returns (NodeID);
+    rpc PutLocation (CoordinateIDMessage) returns (Status);
+    rpc GetLocation (NodeID) returns (CoordinateMessage);
+    rpc PutWeight (WeightMessage) returns (Status);
+    rpc GetWeight (CoordinateMessage) returns (WeightMessage);
+}
+
+service CommunicationService {
+    rpc HealthCheck (google.protobuf.Empty) returns (Status);
+    rpc RegisterNode (google.protobuf.Empty) returns (NodeID);
+    rpc SetInitialWeights (InitialWeightsMessage) returns (google.protobuf.Empty);
+    rpc PutLocation (stream CoordinateIDMessage) returns (google.protobuf.Empty);
+    rpc SubscribeLocations (NodeID) returns (stream CoordinateIDMessage);
+    rpc PutWeight (stream WeightMessage) returns (google.protobuf.Empty);
+    rpc SubscribeWeights (NodeID) returns (stream WeightMessage);
+
+}

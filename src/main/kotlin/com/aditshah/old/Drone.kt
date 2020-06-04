@@ -1,4 +1,4 @@
-package com.aditshah.distributed
+package com.aditshah.old
 
 
 abstract class Drone(
@@ -6,7 +6,8 @@ abstract class Drone(
     location: Coordinate,
     info: SharedInfo,
     coverageRadius: Double = 1.0,
-    minDistance: Double = 1.5
+    minDistance: Double = 1.0,
+    moveRadius: Double = 1.0
 ) : Node(id, location, info) {
 
 
@@ -22,5 +23,10 @@ abstract class Drone(
             field = value
         }
 
+    var moveRadius: Double = moveRadius
+        set(value) {
+            require(value > 0)
+            field = value
+        }
 
 }
