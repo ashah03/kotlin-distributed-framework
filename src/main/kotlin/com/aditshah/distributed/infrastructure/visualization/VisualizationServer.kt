@@ -29,16 +29,11 @@ import org.slf4j.event.Level
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
-suspend fun ApplicationCall.respondWith(content: String, contentType: ContentType) {
-    response.header("cache-control", "must-revalidate,no-cache,no-store")
-//    response.header("Access-Control-Allow-Credentials", "true")
-//    response.header("Access-Control-Allow-Headers", "accept,origin,authorization,content-type")
-//    response.header("Access-Control-Allow-Methods", "*")
-    response.header("Access-Control-Allow-Origin", "*")
-    response.status(HttpStatusCode.OK)
-    respondText(content, contentType)
-}
 
+/*
+ * This creates the visualization as a Ktor server located at http://localhost:8080/static/test.html
+ * The code for the display is located at src/main/resources/static/dronesTest.js and test.html
+ */
 class VisualizationServer(
     info: MapSharedInfo,
     val additionalComponents: MutableList<Component> = mutableListOf(),
@@ -171,3 +166,12 @@ fun Routing.createGet(component: Component) {
 
 fun Serializable.toJson(): String = Json(JsonConfiguration(allowStructuredMapKeys = true)).stringify(serializer(), this)
 
+suspend fun ApplicationCall.respondWith(content: String, contentType: ContentType) {
+    response.header("cache-control", "must-revalidate,no-cache,no-store")
+//    response.header("Access-Control-Allow-Credentials", "true")
+//    response.header("Access-Control-Allow-Headers", "accept,origin,authorization,content-type")
+//    response.header("Access-Control-Allow-Methods", "*")
+    response.header("Access-Control-Allow-Origin", "*")
+    response.status(HttpStatusCode.OK)
+    respondText(content, contentType)
+}

@@ -36,6 +36,10 @@ class GrpcNode(
 
     private var id = -1
 
+    /*
+     * This function connects the node to the server, receives an ID, sends its stating location, and subscribes to future
+     * updates to the Location and Weights, each in their own thread
+     */
     override fun registerNode(): Int {
         client.connect()
         id = client.registerNode()
@@ -55,6 +59,10 @@ class GrpcNode(
 
     class NodeNotRegisteredException(message: String = "") : RuntimeException()
 
+    /*
+     * The logic for this appears convoluted, but it exists to account for the diferrent posibilities if the id has
+     * not been assigned.
+     */
     override fun getID(): Int {
         if (id == -1) {
             if (!isRegistered) {
@@ -114,7 +122,8 @@ class GrpcNode(
     }
 
     /**
-     * This class has the gRPC calls to the Communication Server
+     * This class has the gRPC calls to the Communication Server. They are in an inner class to avoid cluttering the main
+     * communication logic
      */
     private inner class NodeClient : Closeable {
 

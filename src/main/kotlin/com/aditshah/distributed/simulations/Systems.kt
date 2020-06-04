@@ -6,7 +6,8 @@ import com.aditshah.distributed.infrastructure.common.WeightsMap
 import com.aditshah.distributed.infrastructure.simulation.NodeSimulation
 
 /*
- * This file contains a bunch of different presets for system configurations by grid size and starting position
+ * This file contains a number of different presets for system configurations by grid size and starting position
+ * These are called from the system{} block of IterativeDiscreteDrone.create{}
  */
 fun NodeSimulation.NodeBuilder.system10Corner() {
     startingLocationGenerator = { coordinateArea.topLeft }

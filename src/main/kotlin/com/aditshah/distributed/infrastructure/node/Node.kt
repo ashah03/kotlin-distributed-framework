@@ -4,6 +4,11 @@ import com.aditshah.distributed.infrastructure.common.Coordinate
 import com.aditshah.distributed.infrastructure.common.CoordinateArea
 import com.aditshah.distributed.infrastructure.common.MapSharedInfo
 
+/*
+ * This Node interface contains all of the methods that a user of the NodeSimulation has access to
+ * This is kept as an interface so that the API calls that can be made are clear, and the backend implementation
+ * can be modified in the future
+ */
 interface Node {
     fun registerNode(): Int
     fun shutdownNode()

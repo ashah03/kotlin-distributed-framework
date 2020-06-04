@@ -7,6 +7,11 @@ import java.io.Serializable
 import kotlin.concurrent.fixedRateTimer
 import kotlin.time.Duration
 
+/*
+ * This is an implementation of the NodeSimulation abstract class. It implements the start function, which in this case
+ *  periodically runs whatever function the user included in the algorithm. There could be many such classes which
+ * describe different types of multi-agent system algorithms; an iterative periodic approach is only one of them.
+ */
 class IterativeDiscreteSimulation : NodeSimulation() {
 
     lateinit var periodicFunction: Node.() -> Unit

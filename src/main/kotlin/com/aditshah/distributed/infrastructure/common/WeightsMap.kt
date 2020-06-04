@@ -9,6 +9,9 @@ fun main() {
     println(WeightsMap("csv/map10.csv").map)
 }
 
+/*
+ * This class keep track of the weights on each node individually, and allows this data to be imported from a CSV file
+ */
 class WeightsMap() {
     var map: ConcurrentMap<Coordinate, Double> = Maps.newConcurrentMap()
 

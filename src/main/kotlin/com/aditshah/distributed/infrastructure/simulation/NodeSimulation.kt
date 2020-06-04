@@ -16,6 +16,11 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
+/*
+ * This contains core of what happens when the simulation is run: The communication server is spun up, along with the
+ * visualization server (which is actually attached to a random node so it has access to internal data), and each of the
+ * nodes are spun up in their own threads.
+ */
 abstract class NodeSimulation {
 
     private val communicationServer = CommunicationServer()

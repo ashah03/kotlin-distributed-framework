@@ -4,6 +4,11 @@ import com.aditshah.distributed.infrastructure.common.Coordinate
 import com.aditshah.distributed.infrastructure.node.Node
 import kotlin.math.ceil
 
+/*
+ * This file contains useful functions that are used a lot in the example algorithms, Greedy and Log-Linear learning
+ */
+
+
 fun Node.getLocationsByRadius(location: Coordinate, r: Double): MutableSet<Coordinate> {
     val adjSet = mutableSetOf<Coordinate>()
     location.apply {

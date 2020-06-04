@@ -7,6 +7,11 @@ import kotlinx.serialization.json.Json
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+/*
+ * This class represents a Coordinate in 3 dimensions, with an X, Y, and Z area, and has some useful functions for
+ * the user. It is also serializable (which means it can be made into a JSON object) so that it can be sent to the
+ * visualization webpage
+ */
 @Serializable
 data class Coordinate(var X: Double, var Y: Double, var Z: Double = 0.0) {
     constructor(X: Int, Y: Int, Z: Int = 0) : this(X.toDouble(), Y.toDouble(), Z.toDouble())

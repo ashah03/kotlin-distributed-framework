@@ -4,7 +4,9 @@ import io.grpc.Server
 import io.grpc.ServerBuilder
 import java.io.IOException
 
-
+/*
+ * This class starts the communications/broadcast server; see CommunicationServiceImpl.kt for the actual implementations of these functions
+ */
 class CommunicationServer() {
 
     var server: Server? = null
