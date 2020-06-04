@@ -1,6 +1,6 @@
 # Distributed Multi-Agent System Simulation Platform
 
-This platform allows users to simulate a distributed-multi agent system.
+This platform allows users to simulate a distributed multi-agent system for a weighted coverage problem.
 
 To begin working with this platform, navigate to the 
 [simulations](https://github.com/ashah03/kotlin-distributed-framework/tree/master/src/main/kotlin/com/aditshah/distributed/simulations) 
