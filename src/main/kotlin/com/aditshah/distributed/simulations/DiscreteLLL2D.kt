@@ -1,39 +1,30 @@
 package com.aditshah.distributed.simulations
 
-import com.aditshah.distributed.infrastructure.common.Coordinate
-import com.aditshah.distributed.infrastructure.common.CoordinateArea
-import com.aditshah.distributed.infrastructure.common.WeightsMap
 import com.aditshah.distributed.infrastructure.simulation.IterativeDiscreteSimulation
-import com.aditshah.distributed.infrastructure.simulation.getLocationsByRadius
-import com.aditshah.distributed.infrastructure.simulation.getValue
+import kotlin.math.pow
 import kotlin.time.seconds
 
 fun main() {
 
     val simulation = IterativeDiscreteSimulation.create {
-        system(5) {
-            startingLocationGenerator = { coordinateArea.genRandomLocationInt2D() }
-//            startingLocationGenerator = { coordinateArea.topLeft }
-            coordinateArea = CoordinateArea(topLeft = Coordinate(0, 0), bottomRight = Coordinate(49, 49))
-            weightMap = WeightsMap("csv/map50norm.csv")
+        system(numNodes = 5) {
+            system20Random()
         }
 
+        //Setting some constants for the algorithm (defined here in case they need to be used for visualization component)
         val coverageRadius = 3.16 //2.24
         val movementRadius = 1.415
+//        val tau = 50.0
+        var tau = Tau(coverageRadius.pow(2) * 1.0)
+//        var tau = Tau(100000.0)
+        val tauDecay = 0.999
 
         visualization {
             addComponent("/coverageRadius", coverageRadius)
         }
 
-        algorithm(delayPeriod = 0.seconds) {
-            val currentLocation = getLocation(getID())
-            println("Current weight = " + getValue(getLocation(getID()), coverageRadius))
-            val weightLocationMap = getLocationsByRadius(currentLocation, movementRadius).map { location ->
-                getValue(location, coverageRadius) to location
-            }
-                    .toMap()
-            val bestLocation = weightLocationMap[weightLocationMap.keys.max()] ?: currentLocation
-            putLocation(bestLocation)
+        algorithm(delayPeriod = 0.01.seconds) {
+            LLL2D(coverageRadius, movementRadius, tau, tauDecay)
         }
     }
     simulation.start()

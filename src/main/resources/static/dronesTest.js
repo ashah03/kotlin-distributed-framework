@@ -6,7 +6,7 @@ var scaleY = 0
 var coverageRadius = 0
 function setup() {
     createCanvas(canvasSizeX, canvasSizeY)
-    frameRate(2)
+    frameRate(1)
     httpGet("http://localhost:8080/size", function (response) {
         var obj = JSON.parse(response)
         var x = obj["x"]
