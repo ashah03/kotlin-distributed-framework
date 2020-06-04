@@ -6,7 +6,7 @@ var scaleY = 0
 var coverageRadius = 0
 function setup() {
     createCanvas(canvasSizeX, canvasSizeY)
-    frameRate(10)
+    frameRate(2)
     httpGet("http://localhost:8080/size", function (response) {
         var obj = JSON.parse(response)
         var x = obj["x"]
@@ -30,9 +30,11 @@ function draw() {
         // print(Object.keys(obj).length)
         for (var i = 0; i < Object.keys(weights).length; i += 2) {
             // print(weights[i])
+            noStroke()
             fill((1 - weights[i + 1]) * 180 + 75, (1 - weights[i + 1]) * 180 + 75, (1 - weights[i + 1]) * 180 + 75)
             // print(i)
             square(weights[i].X * scaleX, weights[i].Y * scaleY, scaleX)
+
             // print("Squares at:")
             // console.log(concat(weights[i].X.toString(), weights[i].Y))
         }
@@ -40,14 +42,18 @@ function draw() {
 
         //print(response)
         var drones = JSON.parse(response).drones.map
+        var radius = scaleX / 1.5
+        if (radius < 15) {
+            radius = 15
+        }
         // print(drones)
         //var drone
         for (var drone in drones) {
             // print(obj[drone])
             // var scale = 50
-            var radius = scaleX / 1.5
             // var padding = radius + 5
             fill(255, 255, 255)
+            stroke(0, 0, 0)
             circle(drones[drone].X * scaleX + scaleX / 2, drones[drone].Y * scaleY + scaleY / 2, radius)
             noFill()
             circle(drones[drone].X * scaleX + scaleX / 2, drones[drone].Y * scaleY + scaleY / 2, coverageRadius * scaleX * 2)

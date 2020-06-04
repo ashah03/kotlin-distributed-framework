@@ -1,7 +1,7 @@
 package com.aditshah.distributed;
 
-import com.aditshah.distributed.node_old.IterativeDiscreteRandomSimulationOld
-import com.aditshah.distributed.server.CommunicationServer
+import com.aditshah.distributed.infrastructure.server.CommunicationServer
+import com.aditshah.old.node_old.IterativeDiscreteRandomSimulationOld
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import kotlin.concurrent.thread

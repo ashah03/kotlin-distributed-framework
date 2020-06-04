@@ -10,8 +10,8 @@
 
     <logger name="io.grpc.internal" level="WARN"/>
 
-    <logger name="com.aditshah.distributed.node" level="DEBUG"/>
-    <logger name="com.aditshah.distributed.server" level="DEBUG"/>
+    <logger name="com.aditshah.distributed.infrastructure.node" level="DEBUG"/>
+    <logger name="com.aditshah.distributed.infrastructure.server" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

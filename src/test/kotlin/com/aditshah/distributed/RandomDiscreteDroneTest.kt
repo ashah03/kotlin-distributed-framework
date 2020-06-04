@@ -1,11 +1,11 @@
 package com.aditshah.distributed;
 
-import com.aditshah.distributed.common.Coordinate
-import com.aditshah.distributed.common.CoordinateArea
-import com.aditshah.distributed.node.WeightsMap
-import com.aditshah.distributed.node_old.OldNode
-import com.aditshah.distributed.node_old.RandomDiscreteDrone
-import com.aditshah.distributed.server.CommunicationServer
+import com.aditshah.distributed.infrastructure.common.Coordinate
+import com.aditshah.distributed.infrastructure.common.CoordinateArea
+import com.aditshah.distributed.infrastructure.common.WeightsMap
+import com.aditshah.distributed.infrastructure.server.CommunicationServer
+import com.aditshah.old.node_old.OldNode
+import com.aditshah.old.node_old.RandomDiscreteDrone
 import org.amshove.kluent.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
