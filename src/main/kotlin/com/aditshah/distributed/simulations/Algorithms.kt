@@ -7,6 +7,11 @@ import com.aditshah.distributed.infrastructure.simulation.getValue
 import kotlin.math.E
 import kotlin.math.pow
 
+/*
+ * This file contains the logic for two algorithms: greedy and Log-Linear Learning
+ */
+
+
 fun Node.greedy2D(coverageRadius: Double, movementRadius: Double) {
     val currentLocation = getLocation(getID())
     println("Current weight = " + getValue(getLocation(getID()), coverageRadius))

@@ -5,6 +5,9 @@ import com.aditshah.distributed.infrastructure.common.CoordinateArea
 import com.aditshah.distributed.infrastructure.common.WeightsMap
 import com.aditshah.distributed.infrastructure.simulation.NodeSimulation
 
+/*
+ * This file contains a bunch of different presets for system configurations by grid size and starting position
+ */
 fun NodeSimulation.NodeBuilder.system10Corner() {
     startingLocationGenerator = { coordinateArea.topLeft }
     coordinateArea = CoordinateArea(topLeft = Coordinate(0, 0), bottomRight = Coordinate(9, 9))
