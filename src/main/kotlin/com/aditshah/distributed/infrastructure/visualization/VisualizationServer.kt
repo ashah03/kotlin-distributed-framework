@@ -12,7 +12,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.response.header
-import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
@@ -84,22 +83,22 @@ class VisualizationServer(
                 resources("static")
             }
 
-            get("/drone") {
-                val strID = call.parameters["id"]
-                if (strID == null) call.respond(HttpStatusCode.BadRequest, "No ID specified")
-                val id: Int = Integer.parseInt(strID)
-                if (info.getIDs()
-                            .contains(id)
-                ) {
-                    call.respondWith(
-                        info.getLocation(id)
-                                .toJson(), ContentType.Application.Json
-                    )
-                } else {
-                    call.respond(HttpStatusCode.BadRequest, "400: Invalid ID")
-                }
-
-            }
+//            get("/drone") {
+//                val strID = call.parameters["id"]
+//                if (strID == null) call.respond(HttpStatusCode.BadRequest, "No ID specified")
+//                val id: Int = Integer.parseInt(strID)
+//                if (info.getIDs()
+//                            .contains(id)
+//                ) {
+//                    call.respondWith(
+//                        info.getLocation(id)
+//                                .toJson(), ContentType.Application.Json
+//                    )
+//                } else {
+//                    call.respond(HttpStatusCode.BadRequest, "400: Invalid ID")
+//                }
+//
+//            }
 
 
             get("/drones") {
