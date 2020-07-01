@@ -1,6 +1,6 @@
 # AgentSim: Distributed Multi-Agent System Simulation Platform
 
-This platform allows users to simulate a distributed multi-agent system for a weighted coverage problem. For details about the problem description, check out my [research paper, presentation, and poster](https://web.ece.ucsb.edu/~blf/RMP_Adit.html)
+This platform allows users to simulate a distributed multi-agent system for a weighted coverage problem. Check out my [**presentation and demo**](https://youtu.be/DkwteQkPXPw) to learn more about the problem description and see what the end result looks like. My [**blog posts**](http://blog.aditshah.com/search/label/AgentSim) about this project describe the goals and results. This work is based on my research at UC Santa Barbara in 2019: [research paper, presentation, and poster](https://web.ece.ucsb.edu/~blf/RMP_Adit.html)
 
 To begin working with this platform, navigate to the 
 [simulations](src/main/kotlin/com/aditshah/distributed/simulations) 
